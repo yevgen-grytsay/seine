@@ -23,6 +23,8 @@
 namespace Seine\Parser\DOM;
 
 use Seine\Book;
+use Seine\Factory;
+use Seine\Parser\DOMStyle\Fill;
 use Seine\Sheet;
 use Seine\Writer;
 
@@ -39,8 +41,37 @@ final class DOMBook extends DOMElement implements Book
     private $started = false;
 
     private $styleId = 0;
-    private $styles = array();
-    
+
+    /**
+     * @var \SplObjectStorage
+     */
+    private $styles;
+
+    /**
+     * @var \SplObjectStorage
+     */
+    private $fills;
+
+    /**
+     * @var \SplObjectStorage
+     */
+    private $colors;
+
+    /**
+     * DOMBook constructor.
+     *
+     * @param \Seine\Factory $factory
+     */
+    public function __construct(Factory $factory)
+    {
+        $this->fills = new \SplObjectStorage();
+        $this->colors = new \SplObjectStorage();
+        $this->styles = new \SplObjectStorage();
+        parent::__construct($factory);
+
+        $this->newFill()->setPatternType(Fill::PATTERN_NONE);
+    }
+
     public function setWriter(Writer $writer)
     {
         $this->writer = $writer;
@@ -75,9 +106,29 @@ final class DOMBook extends DOMElement implements Book
     
     public function newStyle()
     {
-        $style = $this->factory->getStyle($this->styleId++);
-        $this->styles[] = $style;
+        $style = $this->factory->getStyle();
+        $this->styles->attach($style, $this->styles->count());
+
         return $style;
+    }
+
+    /**
+     * @return Fill
+     */
+    public function newFill()
+    {
+        $fill = $this->factory->createFill();
+        $this->fills->attach($fill, $this->fills->count());
+
+        return $fill;
+    }
+
+    public function newColor()
+    {
+        $color = $this->factory->createColor();
+        $this->colors->attach($color, $this->colors->count());
+
+        return $color;
     }
     
     public function getStyles()
@@ -110,5 +161,21 @@ final class DOMBook extends DOMElement implements Book
         }
         
         $this->started = false;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFills()
+    {
+        return $this->fills;
+    }
+
+    /**
+     * @return array
+     */
+    public function getColors()
+    {
+        return $this->colors;
     }
 }

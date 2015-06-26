@@ -22,6 +22,7 @@
  */
 namespace Seine\Parser\DOM;
 
+use Seine\Parser\CellStyle;
 use Seine\Row;
 use Seine\Factory;
 use Seine\Style;
@@ -60,14 +61,16 @@ final class DOMArrayRow extends DOMElement implements Row
     {
         return $this->style;
     }
-    
+
     /**
-     * @param Style $style
-     * @return DOMArrayRow 
+     * @param \Seine\Parser\CellStyle $style
+     *
+     * @return $this
      */
-    public function setStyle(Style $style)
+    public function setStyle(CellStyle $style)
     {
         $this->style = $style;
+
         return $this;
     }
 }

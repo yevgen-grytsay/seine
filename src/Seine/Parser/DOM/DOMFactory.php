@@ -23,6 +23,9 @@
 namespace Seine\Parser\DOM;
 
 use Seine\Factory;
+use Seine\Parser\CellStyle;
+use Seine\Parser\DOMStyle\Color;
+use Seine\Parser\DOMStyle\Fill;
 use Seine\Writer\WriterFactoryImpl;
 use Seine\Writer;
 use Seine\Configuration;
@@ -109,12 +112,11 @@ final class DOMFactory implements Factory
     /**
      * @internal
      * @see Book::newStyle()
-     * @param string $id
-     * @return DOMStyle
+     * @return \Seine\Parser\DOM\DOMStyle
      */
-    public function getStyle($id)
+    public function getStyle()
     {
-        return new DOMStyle($this, $id);
+        return new CellStyle();
     }
     
     /**
@@ -172,5 +174,15 @@ final class DOMFactory implements Factory
         } else {
             throw new \InvalidArgumentException('writer not found: ' . $writerName);
         }
+    }
+
+    public function createFill()
+    {
+        return new Fill();
+    }
+
+    public function createColor()
+    {
+        return new Color('FFFFFFFF');
     }
 }

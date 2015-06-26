@@ -22,6 +22,10 @@
  */
 namespace Seine;
 
+use Seine\Parser\CellStyle;
+use Seine\Parser\DOMStyle\Color;
+use Seine\Parser\DOMStyle\Fill;
+
 /**
  * Represents the entire book or document.
  */
@@ -53,14 +57,29 @@ interface Book
     /**
      * Create and add a new Style for this Book. Only needs to be added to the wanted Row(s).
      * 
-     * @return Style
+     * @return CellStyle
      */
     public function newStyle();
+
+    /**
+     * @return Color
+     */
+    public function newColor();
+
+    /**
+     * @return Fill
+     */
+    public function newFill();
     
     /**
      * Get the Style(s) added to this Book.
      * 
-     * @return Style[]
+     * @return \SplObjectStorage
      */
     public function getStyles();
+
+    /**
+     * @return \SplObjectStorage
+     */
+    public function getFills();
 }

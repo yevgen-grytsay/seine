@@ -22,7 +22,11 @@
  */
 namespace Seine;
 
-interface Factory 
+use Seine\Parser\CellStyle;
+use Seine\Parser\DOMStyle\Color;
+use Seine\Parser\DOMStyle\Fill;
+
+interface Factory
 {
     /**
      * @return WriterFactory
@@ -45,9 +49,19 @@ interface Factory
     public function getRow(array $cells);
 
     /**
-     * @return Style
+     * @return \Seine\Parser\CellStyle
      */
-    public function getStyle($id);
+    public function getStyle();
+
+    /**
+     * @return Fill
+     */
+    public function createFill();
+
+    /**
+     * @return Color
+     */
+    public function createColor();
 
     /**
      * @param stream $fp

@@ -72,7 +72,7 @@ final class DOMSheet extends DOMElement implements Sheet
     {
         $row = ($data instanceof Row ? $data : $this->factory->getRow($data));
         $this->startSheet();
-        $this->writer->writeRow($this, $row);
+        $this->writer->writeRow($this->book, $this, $row);
     }
 
     public function setName($name)

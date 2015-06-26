@@ -22,6 +22,7 @@
  */
 namespace Seine\Writer\OfficeOpenXML2007;
 
+use Seine\Book;
 use Seine\Row;
 use Seine\Sheet;
 use Seine\Style;
@@ -69,14 +70,21 @@ final class SheetHelper
         fwrite($this->stream, '    <sheetData>' . MyWriter::EOL);
     }
 
-    public function writeRow(Row $row)
+    public function writeRow(Book $book, Row $row)
     {
+        $styleId = 0;
+        $styles = $book->getStyles();
+        $style = $row->getStyle();
+        if ($style && $styles->contains($style)) {
+            $styleId = $book->getStyles()->offsetGet($style);
+        }
+
         $columnId = 'A';
         $rowId = ++$this->rowId;
         $out = '        <row r="' . $rowId . '">' . MyWriter::EOL;
         foreach($row->getCells() as $cell) {
             $out .= '            <c r="' . $columnId . $rowId . '"';
-            $out .= ' s="' . ($row->getStyle() ? $row->getStyle()->getId() : $this->defaultStyle->getId()) . '"';
+            $out .= ' s="' . $styleId . '"';
             if(is_numeric($cell)) {
                 $out .= '><v>' . $cell . '</v></c>' . MyWriter::EOL;
             } else {

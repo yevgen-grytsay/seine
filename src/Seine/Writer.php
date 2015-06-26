@@ -24,7 +24,7 @@ namespace Seine;
 
 interface Writer
 {
-    public function writeRow(Sheet $sheet, Row $row);
+    public function writeRow(Book $book, Sheet $sheet, Row $row);
 
     public function startSheet(Book $book, Sheet $sheet);
 

@@ -86,9 +86,9 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
         $this->sheetHelpers[$sheet->getId()] = $sheetHelper;
     }
     
-    public function writeRow(Sheet $sheet, Row $row)
+    public function writeRow(Book $book, Sheet $sheet, Row $row)
     {
-        $this->sheetHelpers[$sheet->getId()]->writeRow($row);
+        $this->sheetHelpers[$sheet->getId()]->writeRow($book, $row);
     }
     
     public function endSheet(Book $book, Sheet $sheet)
@@ -100,7 +100,7 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     {
         $this->sharedStrings->end();
         $this->createBookFile($book->getSheets());
-        $this->createStylesFile($book->getStyles());
+        $this->createStylesFile($book);
         $this->createDataRelationsFile($book->getSheets());
         $this->createContentTypesFile($book->getSheets());
         $this->zipWorkingFiles();
@@ -171,14 +171,18 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
         $filename = $this->dataDir . DIRECTORY_SEPARATOR . 'workbook.xml';
         $this->createWorkingFile($filename, $data);
     }
-    
+
     /**
-     * @param Style[] $styles 
+     * @param \Seine\Book $book
+     *
+     * @throws \Seine\IOException
+     * @internal param \Seine\Style[]|\SplObjectStorage $styles
+     *
      */
-    private function createStylesFile(array $styles)
+    private function createStylesFile(Book $book)
     {
         $stylesHelper = new StylesHelper();
         $filename = $this->dataDir . DIRECTORY_SEPARATOR . 'styles.xml';
-        $this->createWorkingFile($filename, $stylesHelper->render($styles));
+        $this->createWorkingFile($filename, $stylesHelper->render($book));
     }
 }
