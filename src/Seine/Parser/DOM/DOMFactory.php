@@ -23,6 +23,7 @@
 namespace Seine\Parser\DOM;
 
 use Seine\Factory;
+use Seine\Parser\CellFormatting;
 use Seine\Parser\CellStyle;
 use Seine\Parser\DOMStyle\Color;
 use Seine\Parser\DOMStyle\Fill;
@@ -109,11 +110,10 @@ final class DOMFactory implements Factory
         return new DOMSheet($this);
     }
 
-    /**
-     * @internal
-     * @see Book::newStyle()
-     * @return \Seine\Parser\DOM\DOMStyle
-     */
+	/**
+	 * @return CellStyle
+	 * @internal
+	 */
     public function getStyle()
     {
         return new CellStyle();
@@ -185,4 +185,13 @@ final class DOMFactory implements Factory
     {
         return new Color('FFFFFFFF');
     }
+
+	/**
+	 * @param CellStyle $style
+	 * @return CellFormatting
+	 */
+	public function getFormatting(CellStyle $style)
+	{
+		return new CellFormatting($style);
+	}
 }

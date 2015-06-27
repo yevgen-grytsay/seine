@@ -65,7 +65,7 @@ class OfficeXML2003StreamWriter implements Writer
 
     public function endBook(Book $book)
     {
-        $this->writeStyles($book->getStyles());
+        $this->writeStyles($book->getFormats());
         $this->writeSheets($this->sheets);
         $this->writeStream($this->stream, '</Workbook>');
     }

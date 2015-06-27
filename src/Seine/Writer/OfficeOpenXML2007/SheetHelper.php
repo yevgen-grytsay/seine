@@ -73,10 +73,10 @@ final class SheetHelper
     public function writeRow(Book $book, Row $row)
     {
         $styleId = 0;
-        $styles = $book->getStyles();
+        $styles = $book->getFormats();
         $style = $row->getStyle();
         if ($style && $styles->contains($style)) {
-            $styleId = $book->getStyles()->offsetGet($style);
+            $styleId = $book->getFormats()->offsetGet($style);
         }
 
         $columnId = 'A';

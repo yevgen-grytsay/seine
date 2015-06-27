@@ -28,7 +28,7 @@ use Seine\Sheet;
 use Seine\Style;
 use Seine\Writer\OfficeOpenXML2007\WriterBase;
 use Seine\Writer\OfficeOpenXML2007\SharedStringsHelper;
-use Seine\Writer\OfficeOpenXML2007\StylesHelper;
+use Seine\Writer\OfficeOpenXML2007\StylesRender;
 use Seine\Writer\OfficeOpenXML2007\SheetHelper;
 use Seine\Configuration;
 
@@ -65,7 +65,7 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     public function startBook(Book $book)
     {
         $this->createBaseStructure();
-        $this->defaultStyle = $book->newStyle();
+        $this->defaultStyle = $book->newFormatting();
         $this->startSharedStrings();
     }
 
@@ -181,7 +181,7 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
      */
     private function createStylesFile(Book $book)
     {
-        $stylesHelper = new StylesHelper();
+        $stylesHelper = new StylesRender();
         $filename = $this->dataDir . DIRECTORY_SEPARATOR . 'styles.xml';
         $this->createWorkingFile($filename, $stylesHelper->render($book));
     }

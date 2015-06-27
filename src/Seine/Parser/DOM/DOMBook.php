@@ -40,12 +40,10 @@ final class DOMBook extends DOMElement implements Book
    
     private $started = false;
 
-    private $styleId = 0;
-
     /**
      * @var \SplObjectStorage
      */
-    private $styles;
+    private $formats;
 
     /**
      * @var \SplObjectStorage
@@ -57,6 +55,11 @@ final class DOMBook extends DOMElement implements Book
      */
     private $colors;
 
+	/**
+	 * @var \SplObjectStorage
+	 */
+	private $styles;
+
     /**
      * DOMBook constructor.
      *
@@ -66,17 +69,29 @@ final class DOMBook extends DOMElement implements Book
     {
         $this->fills = new \SplObjectStorage();
         $this->colors = new \SplObjectStorage();
+        $this->formats = new \SplObjectStorage();
         $this->styles = new \SplObjectStorage();
+
         parent::__construct($factory);
 
         $this->newFill()->setPatternType(Fill::PATTERN_NONE);
+		$this->newFill()->setPatternType('gray125');
+		$this->newStyle();
     }
 
     public function setWriter(Writer $writer)
     {
         $this->writer = $writer;
     }
-    
+
+	public function newStyle()
+	{
+		$style = $this->factory->getStyle();
+		$this->styles->attach($style, $this->styles->count());
+
+		return $style;
+	}
+
     public function newSheet($name = null)
     {
         $sheet = $this->factory->getSheet();
@@ -104,12 +119,13 @@ final class DOMBook extends DOMElement implements Book
         return $this->sheets;
     }
     
-    public function newStyle()
+    public function newFormatting()
     {
-        $style = $this->factory->getStyle();
-        $this->styles->attach($style, $this->styles->count());
+		$this->styles->rewind();
+        $format = $this->factory->getFormatting($this->styles->current());
+        $this->formats->attach($format, $this->formats->count());
 
-        return $style;
+        return $format;
     }
 
     /**
@@ -131,9 +147,9 @@ final class DOMBook extends DOMElement implements Book
         return $color;
     }
     
-    public function getStyles()
+    public function getFormats()
     {
-        return $this->styles;
+        return $this->formats;
     }
     
     private function startBook()

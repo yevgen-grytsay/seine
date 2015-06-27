@@ -22,7 +22,7 @@
  */
 namespace Seine;
 
-use Seine\Parser\CellStyle;
+use Seine\Parser\CellFormatting;
 use Seine\Parser\DOMStyle\Color;
 use Seine\Parser\DOMStyle\Fill;
 
@@ -57,9 +57,9 @@ interface Book
     /**
      * Create and add a new Style for this Book. Only needs to be added to the wanted Row(s).
      * 
-     * @return CellStyle
+     * @return CellFormatting
      */
-    public function newStyle();
+    public function newFormatting();
 
     /**
      * @return Color
@@ -76,7 +76,7 @@ interface Book
      * 
      * @return \SplObjectStorage
      */
-    public function getStyles();
+    public function getFormats();
 
     /**
      * @return \SplObjectStorage

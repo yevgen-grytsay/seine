@@ -22,6 +22,7 @@
  */
 namespace Seine;
 
+use Seine\Parser\CellFormatting;
 use Seine\Parser\CellStyle;
 use Seine\Parser\DOMStyle\Color;
 use Seine\Parser\DOMStyle\Fill;
@@ -49,9 +50,15 @@ interface Factory
     public function getRow(array $cells);
 
     /**
-     * @return \Seine\Parser\CellStyle
+     * @return CellStyle
      */
     public function getStyle();
+
+	/**
+	 * @param CellStyle $style
+	 * @return CellFormatting
+	 */
+	public function getFormatting(CellStyle $style);
 
     /**
      * @return Fill
