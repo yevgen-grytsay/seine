@@ -8,7 +8,12 @@
 
 namespace Seine\Parser\DOMStyle;
 
-
+/**
+ * This element defines the properties for one of the fonts used in a workbook.
+ *
+ * Class Font
+ * @package Seine\Parser\DOMStyle
+ */
 class Font
 {
 	const FAMILY_SWISS = 2;

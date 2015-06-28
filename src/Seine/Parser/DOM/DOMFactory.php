@@ -23,12 +23,6 @@
 namespace Seine\Parser\DOM;
 
 use Seine\Factory;
-use Seine\Parser\CellFormatting;
-use Seine\Parser\CellStyle;
-use Seine\Parser\DOMStyle\Color;
-use Seine\Parser\DOMStyle\Fill;
-use Seine\Parser\DOMStyle\Font;
-use Seine\Parser\DOMStyle\PatternFill;
 use Seine\Writer\WriterFactoryImpl;
 use Seine\Writer;
 use Seine\Configuration;
@@ -111,15 +105,6 @@ final class DOMFactory implements Factory
     {
         return new DOMSheet($this);
     }
-
-	/**
-	 * @return CellStyle
-	 * @internal
-	 */
-    public function getStyle()
-    {
-        return new CellStyle();
-    }
     
     /**
      * Get a Book already configured with a writer and options from the default configuration
@@ -136,13 +121,14 @@ final class DOMFactory implements Factory
         return $book;
     }
 
-    /**
-     * Get a writer configured using the default configuration or the one passed in.
-     *
-     * @param stream $fp
-     * @param Configuration $config
-     * @return Writer
-     */
+	/**
+	 * Get a writer configured using the default configuration or the one passed in.
+	 *
+	 * @param stream $fp
+	 * @param Configuration $config
+	 * @return Writer
+	 * @throws \Exception
+	 */
     public function getConfiguredWriter($fp, Configuration $config = null)
     {
         if(! $config) {

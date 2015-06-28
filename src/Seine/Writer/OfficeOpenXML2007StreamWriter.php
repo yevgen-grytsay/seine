@@ -25,7 +25,6 @@ namespace Seine\Writer;
 use Seine\Row;
 use Seine\Book;
 use Seine\Sheet;
-use Seine\Style;
 use Seine\Writer\OfficeOpenXML2007\WriterBase;
 use Seine\Writer\OfficeOpenXML2007\SharedStringsHelper;
 use Seine\Writer\OfficeOpenXML2007\StylesRender;
@@ -41,11 +40,6 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     const OPT_TEMP_DIR = Configuration::OPT_TEMP_DIR;
 
     private $autoCloseStream = false;
-
-    /**
-     * @var Style
-     */
-    private $defaultStyle;
 
     /**
      * @var SharedStringsHelper

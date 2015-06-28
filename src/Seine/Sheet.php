@@ -24,10 +24,12 @@ namespace Seine;
 
 interface Sheet
 {
-    /**
-     * @internal assigned by Book
-     * @access private
-     */
+	/**
+	 * @internal assigned by Book
+	 * @access private
+	 * @param Book $book
+	 * @return
+	 */
     public function setBook(Book $book);
 
     /**
@@ -52,13 +54,14 @@ interface Sheet
      * @return string
      */
     public function getId();
-    
-    /**
-     * Used by Book to assign a unique id to the sheet.
-     *
-     * @access private
-     * @return Sheet
-     */
+
+	/**
+	 * Used by Book to assign a unique id to the sheet.
+	 *
+	 * @access private
+	 * @param $id
+	 * @return Sheet
+	 */
     public function setId($id);
     
     public function setName($name);

@@ -43,9 +43,11 @@ class Seine
     $this->factory = new DOMFactory();
   }
 
-  /**
-   * @return Book
-   */
+	/**
+	 * @param $filename
+	 * @param string $mode
+	 * @return Book
+	 */
   public function newDocument($filename, $mode = 'w') 
   {
     $fp = fopen($filename, $mode);
@@ -54,16 +56,18 @@ class Seine
     return $this->factory->getConfiguredBook($fp, $config);
   }
 
-  /**
-   * @return Book
-   */
+	/**
+	 * @param $fp
+	 * @return Book
+	 */
   public function newDocumentFromStream($fp) {
     return $this->factory->getConfiguredBook($fp, $this->config);
   }
 
-  /**
-   * @return Row
-   */
+	/**
+	 * @param array $cells
+	 * @return Row
+	 */
   public function getRow(array $cells)
   {
     return $this->factory->getRow($cells);

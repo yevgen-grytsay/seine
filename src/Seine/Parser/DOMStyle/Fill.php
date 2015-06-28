@@ -9,7 +9,7 @@
 namespace Seine\Parser\DOMStyle;
 
 
-interface Fill
+class Fill
 {
 
 }

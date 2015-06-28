@@ -8,8 +8,14 @@
 
 namespace Seine\Parser\DOMStyle;
 
-
-class PatternFill implements Fill
+/**
+ * This element is used to specify cell fill information for pattern and solid color cell fills.
+ * §18.8.32 Ecma Office Open XML Part 1 - Fundamentals And Markup Language Reference
+ *
+ * Class PatternFill
+ * @package Seine\Parser\DOMStyle
+ */
+class PatternFill extends Fill
 {
 	const PATTERN_SOLID = 'solid';
 	const PATTERN_NONE = 'none';

@@ -44,7 +44,7 @@ class Sheet
 
     /**
      * @param resource $stream
-     * @return Seine\Writer\OfficeXml2003StreamWriter\Sheet
+     * @return \Seine\Writer\OfficeXml2003StreamWriter\Sheet
      */
     public function setStream($stream)
     {

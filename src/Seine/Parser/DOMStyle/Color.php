@@ -28,5 +28,4 @@ class Color
     {
         $this->rgb = $rgb;
     }
-
 }

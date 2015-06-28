@@ -9,12 +9,15 @@
 namespace Seine\Parser\DOMStyle;
 
 /**
- * Not implemented.
+ * This element defines a gradient-style cell fill.
+ * §18.8.24 Ecma Office Open XML Part 1 - Fundamentals And Markup Language Reference
+ *
+ * Not yet implemented.
  *
  * Class GradientFill
  * @package Seine\Parser\DOMStyle
  */
-class GradientFill implements Fill
+class GradientFill extends Fill
 {
 
 }

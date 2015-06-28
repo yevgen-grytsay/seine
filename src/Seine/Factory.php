@@ -22,12 +22,6 @@
  */
 namespace Seine;
 
-use Seine\Parser\CellFormatting;
-use Seine\Parser\CellStyle;
-use Seine\Parser\DOMStyle\Color;
-use Seine\Parser\DOMStyle\Font;
-use Seine\Parser\DOMStyle\PatternFill;
-
 interface Factory
 {
     /**
@@ -45,15 +39,11 @@ interface Factory
      */
     public function getSheet();
 
-    /**
-     * @return Row
-     */
+	/**
+	 * @param array $cells
+	 * @return Row
+	 */
     public function getRow(array $cells);
-
-    /**
-     * @return CellStyle
-     */
-    public function getStyle();
 
     /**
      * @param stream $fp
