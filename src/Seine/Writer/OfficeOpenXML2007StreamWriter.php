@@ -65,7 +65,6 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     public function startBook(Book $book)
     {
         $this->createBaseStructure();
-        $this->defaultStyle = $book->newFormatting();
         $this->startSharedStrings();
     }
 
@@ -81,7 +80,7 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     {
         $filename = $this->sheetDir . DIRECTORY_SEPARATOR . 'sheet' . $sheet->getId() . '.xml';
         $this->createEmptyWorkingFile($filename);
-        $sheetHelper = new SheetHelper($sheet, $this->sharedStrings, $this->defaultStyle, $filename);
+        $sheetHelper = new SheetHelper($sheet, $this->sharedStrings, $filename);
         $sheetHelper->start();
         $this->sheetHelpers[$sheet->getId()] = $sheetHelper;
     }
@@ -183,6 +182,6 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     {
         $stylesHelper = new StylesRender();
         $filename = $this->dataDir . DIRECTORY_SEPARATOR . 'styles.xml';
-        $this->createWorkingFile($filename, $stylesHelper->render($book));
+        $this->createWorkingFile($filename, $stylesHelper->render($book->getStyleSheetList()[0]));
     }
 }

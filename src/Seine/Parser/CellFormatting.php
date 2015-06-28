@@ -12,7 +12,7 @@ use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Style;
 
-class CellFormatting implements Style
+class CellFormatting
 {
     /**
      * @var Fill
@@ -20,19 +20,9 @@ class CellFormatting implements Style
     private $fill;
 
 	/**
-	 * @var CellStyle
-	 */
-	private $style;
-
-	/**
 	 * @var Font
 	 */
 	private $font;
-
-	public function __construct(CellStyle $style)
-	{
-		$this->style = $style;
-	}
 
 	/**
      * @return Fill
@@ -65,28 +55,4 @@ class CellFormatting implements Style
 	{
 		$this->font = $font;
 	}
-
-    /**
-     * @internal assigned by Book
-     * @access   private
-     */
-    public function getId()
-    {
-        // TODO: Implement getId() method.
-    }
-
-    public function getFontBold()
-    {
-        // TODO: Implement getFontBold() method.
-    }
-
-    public function getFontFamily()
-    {
-        // TODO: Implement getFontFamily() method.
-    }
-
-    public function getFontSize()
-    {
-        // TODO: Implement getFontSize() method.
-    }
 }

@@ -21,11 +21,7 @@
  * THE SOFTWARE.
  */
 namespace Seine;
-
-use Seine\Parser\CellFormatting;
-use Seine\Parser\DOMStyle\Color;
-use Seine\Parser\DOMStyle\Font;
-use Seine\Parser\DOMStyle\PatternFill;
+use Seine\Parser\DOM\DOMStylesheet;
 
 /**
  * Represents the entire book or document.
@@ -54,43 +50,9 @@ interface Book
      * @return Sheet
      */
     public function newSheet($name = null);
-    
-    /**
-     * Create and add a new Style for this Book. Only needs to be added to the wanted Row(s).
-     * 
-     * @return CellFormatting
-     */
-    public function newFormatting();
-
-    /**
-     * @return Color
-     */
-    public function newColor();
 
 	/**
-	 * @return Font
+	 * @return DOMStylesheet[]
 	 */
-	public function newFont();
-
-    /**
-     * @return PatternFill
-     */
-    public function newPatternFill();
-    
-    /**
-     * Get the Style(s) added to this Book.
-     * 
-     * @return \SplObjectStorage
-     */
-    public function getFormats();
-
-    /**
-     * @return \SplObjectStorage
-     */
-    public function getFills();
-
-	/**
-	 * @return \SplObjectStorage
-	 */
-	public function getFonts();
+	public function getStyleSheetList();
 }

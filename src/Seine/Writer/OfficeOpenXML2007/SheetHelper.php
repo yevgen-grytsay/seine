@@ -41,20 +41,14 @@ final class SheetHelper
      */
     private $sharedStrings;
 
-    /**
-     * @var Style
-     */
-    private $defaultStyle;
-
     private $filename;
     private $stream;
     private $rowId = 0;
 
-    public function __construct(Sheet $sheet, SharedStringsHelper $sharedStrings, Style $defaultStyle, $filename)
+    public function __construct(Sheet $sheet, SharedStringsHelper $sharedStrings, $filename)
     {
         $this->sheet = $sheet;
         $this->sharedStrings = $sharedStrings;
-        $this->defaultStyle = $defaultStyle;
         $this->filename = $filename;
     }
 
@@ -73,10 +67,10 @@ final class SheetHelper
     public function writeRow(Book $book, Row $row)
     {
         $styleId = 0;
-        $styles = $book->getFormats();
+        $formats = $book->getStyleSheetList()[0]->getFormats();
         $style = $row->getStyle();
-        if ($style && $styles->contains($style)) {
-            $styleId = $book->getFormats()->offsetGet($style);
+        if ($style && $formats->contains($style)) {
+            $styleId = $formats->offsetGet($style);
         }
 
         $columnId = 'A';

@@ -41,30 +41,10 @@ final class DOMBook extends DOMElement implements Book
    
     private $started = false;
 
-    /**
-     * @var \SplObjectStorage
-     */
-    private $formats;
-
-    /**
-     * @var \SplObjectStorage
-     */
-    private $fills;
-
-    /**
-     * @var \SplObjectStorage
-     */
-    private $colors;
-
 	/**
-	 * @var \SplObjectStorage
+	 * @var DOMStylesheet[]
 	 */
-	private $styles;
-
-	/**
-	 * @var \SplObjectStorage
-	 */
-	private $fonts;
+    private $styleSheetList = array();
 
     /**
      * DOMBook constructor.
@@ -73,18 +53,12 @@ final class DOMBook extends DOMElement implements Book
      */
     public function __construct(Factory $factory)
     {
-        $this->fills = new \SplObjectStorage();
-        $this->colors = new \SplObjectStorage();
-        $this->formats = new \SplObjectStorage();
-        $this->styles = new \SplObjectStorage();
-        $this->fonts = new \SplObjectStorage();
-
         parent::__construct($factory);
 
-        $this->newPatternFill()->setPatternType(PatternFill::PATTERN_NONE);
-		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_GRAY_125);
-		$this->newStyle();
-		$this->newFont();
+		$sheet = $this->newStyleSheet();
+		$sheet->newPatternFill()->setPatternType(PatternFill::PATTERN_NONE);
+		$sheet->newPatternFill()->setPatternType(PatternFill::PATTERN_GRAY_125);
+		$sheet->newFont();
     }
 
     public function setWriter(Writer $writer)
@@ -92,24 +66,33 @@ final class DOMBook extends DOMElement implements Book
         $this->writer = $writer;
     }
 
-	public function newStyle()
-	{
-		$style = $this->factory->getStyle();
-		$this->styles->attach($style, $this->styles->count());
-
-		return $style;
-	}
-
+	/**
+	 * {{@inheritdoc}}
+	 */
     public function newSheet($name = null)
     {
         $sheet = $this->factory->getSheet();
         if($name) {
             $sheet->setName($name);
         }
-
         $this->addSheet($sheet);
+
         return $sheet;
     }
+
+	/**
+	 * Only one stylesheet supported so far.
+	 * Thus this method was made private.
+	 *
+	 * @return DOMStylesheet
+	 */
+	private function newStyleSheet()
+	{
+		$sheet = new DOMStylesheet();
+		$this->styleSheetList[] = $sheet;
+
+		return $sheet;
+	}
     
     public function addSheet(Sheet $sheet)
     {
@@ -125,47 +108,6 @@ final class DOMBook extends DOMElement implements Book
     public function getSheets()
     {
         return $this->sheets;
-    }
-    
-    public function newFormatting()
-    {
-		$this->styles->rewind();
-        $format = $this->factory->getFormatting($this->styles->current());
-        $this->formats->attach($format, $this->formats->count());
-
-        return $format;
-    }
-
-    /**
-     * {{@inheritdoc}}
-     */
-    public function newPatternFill()
-    {
-        $fill = $this->factory->createPatternFill();
-        $this->fills->attach($fill, $this->fills->count());
-
-        return $fill;
-    }
-
-    public function newColor()
-    {
-        $color = $this->factory->createColor();
-        $this->colors->attach($color, $this->colors->count());
-
-        return $color;
-    }
-
-	public function newFont()
-	{
-		$font = $this->factory->createFont();
-		$this->fonts->attach($font, $this->fonts->count());
-
-		return $font;
-	}
-    
-    public function getFormats()
-    {
-        return $this->formats;
     }
     
     private function startBook()
@@ -195,27 +137,11 @@ final class DOMBook extends DOMElement implements Book
         $this->started = false;
     }
 
-    /**
-     * @return array
-     */
-    public function getFills()
-    {
-        return $this->fills;
-    }
-
-    /**
-     * @return array
-     */
-    public function getColors()
-    {
-        return $this->colors;
-    }
-
 	/**
-	 * @return \SplObjectStorage
+	 * @return DOMStylesheet[]
 	 */
-	public function getFonts()
+	public function getStyleSheetList()
 	{
-		return $this->fonts;
+		return $this->styleSheetList;
 	}
 }

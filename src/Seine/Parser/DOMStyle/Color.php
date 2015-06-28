@@ -14,13 +14,6 @@ class Color
     protected $rgb;
 
     /**
-     * Color constructor.
-     *
-     * @param $rgb
-     */
-    public function __construct($rgb) { $this->rgb = $rgb; }
-
-    /**
      * @return mixed
      */
     public function getRgb()

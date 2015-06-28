@@ -55,27 +55,6 @@ interface Factory
      */
     public function getStyle();
 
-	/**
-	 * @param CellStyle $style
-	 * @return CellFormatting
-	 */
-	public function getFormatting(CellStyle $style);
-
-    /**
-     * @return PatternFill
-     */
-    public function createPatternFill();
-
-    /**
-     * @return Color
-     */
-    public function createColor();
-
-	/**
-	 * @return Font
-	 */
-	public function createFont();
-
     /**
      * @param stream $fp
      * @param Configuration $config

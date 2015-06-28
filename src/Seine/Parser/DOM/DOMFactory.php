@@ -177,31 +177,4 @@ final class DOMFactory implements Factory
             throw new \InvalidArgumentException('writer not found: ' . $writerName);
         }
     }
-
-	/**
-	 * {{@inheritdoc}}
-	 */
-    public function createPatternFill()
-    {
-        return new PatternFill();
-    }
-
-    public function createColor()
-    {
-        return new Color('FFFFFFFF');
-    }
-
-	/**
-	 * @param CellStyle $style
-	 * @return CellFormatting
-	 */
-	public function getFormatting(CellStyle $style)
-	{
-		return new CellFormatting($style);
-	}
-
-	public function createFont()
-	{
-		return new Font();
-	}
 }

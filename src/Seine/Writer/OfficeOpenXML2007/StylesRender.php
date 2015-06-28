@@ -24,6 +24,7 @@ namespace Seine\Writer\OfficeOpenXML2007;
 
 use Seine\Book;
 use Seine\Parser\CellFormatting;
+use Seine\Parser\DOM\DOMStylesheet;
 use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
@@ -33,19 +34,21 @@ final class StylesRender
     const FONT_FAMILY_DEFAULT = 'Arial';
     const FONT_SIZE_DEFAULT = 10;
 
-    public function render(Book $book)
+	/**
+	 * Only one stylesheet supported so far.
+	 *
+	 * @param DOMStylesheet $styleSheet
+	 * @return string
+	 */
+    public function render(DOMStylesheet $styleSheet)
     {
-        $styles = $book->getFormats();
-        $fills = $book->getFills();
-		$fonts = $book->getFonts();
-
         $data = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' . MyWriter::EOL;
-        $data .= $this->buildStyleFonts($fonts);
-        $data .= $this->buildFills($fills);
+        $data .= $this->buildStyleFonts($styleSheet->getFonts());
+        $data .= $this->buildFills($styleSheet->getFills());
         $data .= $this->buildBorders();
         $data .= $this->buildCellStyles();
-        $data .= $this->buildCellXfs($book, $styles);
+        $data .= $this->buildCellXfs($styleSheet);
         $data .= '</styleSheet>';
         return $data;
     }
@@ -151,18 +154,19 @@ final class StylesRender
 		</cellStyleXfs>';
     }
 
-    private function buildCellXfs(Book $book, \SplObjectStorage $formatList)
+    private function buildCellXfs(DOMStylesheet $styleSheet)
     {
         /**
          * @var CellFormatting $format
          */
+		$formatList = $styleSheet->getFormats();
         $i = 0;
         $data = '    <cellXfs count="' . count($formatList) . '">' . MyWriter::EOL;
         foreach($formatList as $format) {
 
             //TODO: delegate to render
-            $fillId = $this->getFillIdForStyle($book, $format);
-			$fontId = $this->getFontIdForStyle($book, $format);
+            $fillId = $this->getFillIdForStyle($styleSheet, $format);
+			$fontId = $this->getFontIdForStyle($styleSheet, $format);
 
 			//numFmtId="0"
             $data .= '        <xf fontId="'. $fontId .'" fillId="'. $fillId .'" borderId="0" xfId="0" />' . MyWriter::EOL;
@@ -173,11 +177,11 @@ final class StylesRender
         return $data;
     }
 
-    private function getFillIdForStyle(Book $book, CellFormatting $style)
+    private function getFillIdForStyle(DOMStylesheet $styleSheet, CellFormatting $style)
     {
         $fillId = 0;
         $fill = $style->getFill();
-        $fillStorage = $book->getFills();
+        $fillStorage = $styleSheet->getFills();
         if ($fill && $fillStorage->contains($fill)) {
             $fillId = $fillStorage->offsetGet($fill);
         }
@@ -185,11 +189,11 @@ final class StylesRender
         return $fillId;
     }
 
-	private function getFontIdForStyle(Book $book, CellFormatting $style)
+	private function getFontIdForStyle(DOMStylesheet $styleSheet, CellFormatting $style)
 	{
 		$fontId = 0;
 		$font = $style->getFont();
-		$fontStorage = $book->getFonts();
+		$fontStorage = $styleSheet->getFonts();
 		if ($font && $fontStorage->contains($font)) {
 			$fontId = $fontStorage->offsetGet($font);
 		}
