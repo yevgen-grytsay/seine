@@ -27,6 +27,7 @@ use Seine\Parser\CellFormatting;
 use Seine\Parser\CellStyle;
 use Seine\Parser\DOMStyle\Color;
 use Seine\Parser\DOMStyle\Fill;
+use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\PatternFill;
 use Seine\Writer\WriterFactoryImpl;
 use Seine\Writer;
@@ -197,5 +198,10 @@ final class DOMFactory implements Factory
 	public function getFormatting(CellStyle $style)
 	{
 		return new CellFormatting($style);
+	}
+
+	public function createFont()
+	{
+		return new Font();
 	}
 }

@@ -61,6 +61,11 @@ final class DOMBook extends DOMElement implements Book
 	 */
 	private $styles;
 
+	/**
+	 * @var \SplObjectStorage
+	 */
+	private $fonts;
+
     /**
      * DOMBook constructor.
      *
@@ -72,12 +77,14 @@ final class DOMBook extends DOMElement implements Book
         $this->colors = new \SplObjectStorage();
         $this->formats = new \SplObjectStorage();
         $this->styles = new \SplObjectStorage();
+        $this->fonts = new \SplObjectStorage();
 
         parent::__construct($factory);
 
         $this->newPatternFill()->setPatternType(PatternFill::PATTERN_NONE);
 		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_GRAY_125);
 		$this->newStyle();
+		$this->newFont();
     }
 
     public function setWriter(Writer $writer)
@@ -147,6 +154,14 @@ final class DOMBook extends DOMElement implements Book
 
         return $color;
     }
+
+	public function newFont()
+	{
+		$font = $this->factory->createFont();
+		$this->fonts->attach($font, $this->fonts->count());
+
+		return $font;
+	}
     
     public function getFormats()
     {
@@ -195,4 +210,12 @@ final class DOMBook extends DOMElement implements Book
     {
         return $this->colors;
     }
+
+	/**
+	 * @return \SplObjectStorage
+	 */
+	public function getFonts()
+	{
+		return $this->fonts;
+	}
 }

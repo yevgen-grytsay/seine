@@ -25,6 +25,7 @@ namespace Seine;
 use Seine\Parser\CellFormatting;
 use Seine\Parser\CellStyle;
 use Seine\Parser\DOMStyle\Color;
+use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\PatternFill;
 
 interface Factory
@@ -69,6 +70,11 @@ interface Factory
      * @return Color
      */
     public function createColor();
+
+	/**
+	 * @return Font
+	 */
+	public function createFont();
 
     /**
      * @param stream $fp

@@ -24,6 +24,7 @@ namespace Seine;
 
 use Seine\Parser\CellFormatting;
 use Seine\Parser\DOMStyle\Color;
+use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\PatternFill;
 
 /**
@@ -66,6 +67,11 @@ interface Book
      */
     public function newColor();
 
+	/**
+	 * @return Font
+	 */
+	public function newFont();
+
     /**
      * @return PatternFill
      */
@@ -82,4 +88,9 @@ interface Book
      * @return \SplObjectStorage
      */
     public function getFills();
+
+	/**
+	 * @return \SplObjectStorage
+	 */
+	public function getFonts();
 }

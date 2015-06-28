@@ -25,6 +25,7 @@ namespace Seine\Writer\OfficeOpenXML2007;
 use Seine\Book;
 use Seine\Parser\CellFormatting;
 use Seine\Parser\DOMStyle\Fill;
+use Seine\Parser\DOMStyle\Font;
 use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
 
 final class StylesRender
@@ -36,10 +37,11 @@ final class StylesRender
     {
         $styles = $book->getFormats();
         $fills = $book->getFills();
+		$fonts = $book->getFonts();
 
         $data = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' . MyWriter::EOL;
-        $data .= $this->buildStyleFonts($styles);
+        $data .= $this->buildStyleFonts($fonts);
         $data .= $this->buildFills($fills);
         $data .= $this->buildBorders();
         $data .= $this->buildCellStyles();
@@ -48,20 +50,27 @@ final class StylesRender
         return $data;
     }
 
-    private function buildStyleFonts(\SplObjectStorage $styles)
+    private function buildStyleFonts(\SplObjectStorage $fonts)
     {
-        $data = '    <fonts count="' . count($styles) . '">' . MyWriter::EOL;
-        foreach($styles as $style) {
+        $data = '    <fonts count="' . count($fonts) . '">' . MyWriter::EOL;
+		/**
+		 * @var Font $font
+		 */
+        foreach($fonts as $font) {
             $data .= '        <font>' . MyWriter::EOL;
-            if($style->getFontBold()) {
+            if($font->isBold()) {
                 $data .= '            <b/>' . MyWriter::EOL;
             }
-            $data .= '            <sz val="' . ($style->getFontSize() ? $style->getFontSize() : self::FONT_SIZE_DEFAULT) . '"/>' . MyWriter::EOL;
-            $data .= '            <name val="' . ($style->getFontFamily() ? $style->getFontFamily() : self::FONT_FAMILY_DEFAULT) . '"/>' . MyWriter::EOL;
+			if($font->isItalic()) {
+				$data .= '            <i/>' . MyWriter::EOL;
+			}
+            $data .= '            <sz val="' . ($font->getSize() ? $font->getSize() : self::FONT_SIZE_DEFAULT) . '"/>' . MyWriter::EOL;
+            $data .= '            <name val="' . ($font->getFamily() ? $font->getFamily() : self::FONT_FAMILY_DEFAULT) . '"/>' . MyWriter::EOL;
             $data .= '            <family val="2"/>' . MyWriter::EOL; // no clue why this needs to be there
             $data .= '        </font>' . MyWriter::EOL;
         }
         $data .= '    </fonts>' . MyWriter::EOL;
+
         return $data;
     }
 
@@ -153,9 +162,10 @@ final class StylesRender
 
             //TODO: delegate to render
             $fillId = $this->getFillIdForStyle($book, $format);
+			$fontId = $this->getFontIdForStyle($book, $format);
 
 			//numFmtId="0"
-            $data .= '        <xf fontId="0" fillId="'. $fillId .'" borderId="0" xfId="0" />' . MyWriter::EOL;
+            $data .= '        <xf fontId="'. $fontId .'" fillId="'. $fillId .'" borderId="0" xfId="0" />' . MyWriter::EOL;
             $i++;
         }
         $data .= '    </cellXfs>' . MyWriter::EOL;
@@ -174,4 +184,16 @@ final class StylesRender
 
         return $fillId;
     }
+
+	private function getFontIdForStyle(Book $book, CellFormatting $style)
+	{
+		$fontId = 0;
+		$font = $style->getFont();
+		$fontStorage = $book->getFonts();
+		if ($font && $fontStorage->contains($font)) {
+			$fontId = $fontStorage->offsetGet($font);
+		}
+
+		return $fontId;
+	}
 }
