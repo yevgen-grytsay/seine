@@ -25,7 +25,7 @@ namespace Seine;
 use Seine\Parser\CellFormatting;
 use Seine\Parser\CellStyle;
 use Seine\Parser\DOMStyle\Color;
-use Seine\Parser\DOMStyle\Fill;
+use Seine\Parser\DOMStyle\PatternFill;
 
 interface Factory
 {
@@ -61,9 +61,9 @@ interface Factory
 	public function getFormatting(CellStyle $style);
 
     /**
-     * @return Fill
+     * @return PatternFill
      */
-    public function createFill();
+    public function createPatternFill();
 
     /**
      * @return Color

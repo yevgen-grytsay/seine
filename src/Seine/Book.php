@@ -24,7 +24,7 @@ namespace Seine;
 
 use Seine\Parser\CellFormatting;
 use Seine\Parser\DOMStyle\Color;
-use Seine\Parser\DOMStyle\Fill;
+use Seine\Parser\DOMStyle\PatternFill;
 
 /**
  * Represents the entire book or document.
@@ -67,9 +67,9 @@ interface Book
     public function newColor();
 
     /**
-     * @return Fill
+     * @return PatternFill
      */
-    public function newFill();
+    public function newPatternFill();
     
     /**
      * Get the Style(s) added to this Book.

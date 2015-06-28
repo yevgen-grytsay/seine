@@ -27,6 +27,7 @@ use Seine\Parser\CellFormatting;
 use Seine\Parser\CellStyle;
 use Seine\Parser\DOMStyle\Color;
 use Seine\Parser\DOMStyle\Fill;
+use Seine\Parser\DOMStyle\PatternFill;
 use Seine\Writer\WriterFactoryImpl;
 use Seine\Writer;
 use Seine\Configuration;
@@ -176,9 +177,12 @@ final class DOMFactory implements Factory
         }
     }
 
-    public function createFill()
+	/**
+	 * {{@inheritdoc}}
+	 */
+    public function createPatternFill()
     {
-        return new Fill();
+        return new PatternFill();
     }
 
     public function createColor()

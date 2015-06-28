@@ -25,6 +25,7 @@ namespace Seine\Parser\DOM;
 use Seine\Book;
 use Seine\Factory;
 use Seine\Parser\DOMStyle\Fill;
+use Seine\Parser\DOMStyle\PatternFill;
 use Seine\Sheet;
 use Seine\Writer;
 
@@ -74,8 +75,8 @@ final class DOMBook extends DOMElement implements Book
 
         parent::__construct($factory);
 
-        $this->newFill()->setPatternType(Fill::PATTERN_NONE);
-		$this->newFill()->setPatternType('gray125');
+        $this->newPatternFill()->setPatternType(PatternFill::PATTERN_NONE);
+		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_GRAY_125);
 		$this->newStyle();
     }
 
@@ -129,11 +130,11 @@ final class DOMBook extends DOMElement implements Book
     }
 
     /**
-     * @return Fill
+     * {{@inheritdoc}}
      */
-    public function newFill()
+    public function newPatternFill()
     {
-        $fill = $this->factory->createFill();
+        $fill = $this->factory->createPatternFill();
         $this->fills->attach($fill, $this->fills->count());
 
         return $fill;
