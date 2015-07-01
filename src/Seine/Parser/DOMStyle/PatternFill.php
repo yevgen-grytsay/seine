@@ -82,10 +82,13 @@ class PatternFill extends Fill
 
 	/**
 	 * @param Color $bgColor
-	 */
+     * @return $this
+     */
 	public function setBgColor($bgColor)
 	{
 		$this->bgColor = $bgColor;
+
+        return $this;
 	}
 
 	/**
@@ -98,9 +101,12 @@ class PatternFill extends Fill
 
 	/**
 	 * @param mixed $patternType
+     * @return $this
 	 */
 	public function setPatternType($patternType)
 	{
 		$this->patternType = $patternType;
+
+        return $this;
 	}
 }

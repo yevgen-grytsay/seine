@@ -23,9 +23,12 @@ class Color
 
     /**
      * @param mixed $rgb
+     * @return Color
      */
     public function setRgb($rgb)
     {
         $this->rgb = $rgb;
+
+        return $this;
     }
 }

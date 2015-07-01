@@ -16,99 +16,111 @@ namespace Seine\Parser\DOMStyle;
  */
 class Font
 {
-	const FAMILY_SWISS = 2;
+    const FAMILY_SWISS = 2;
 
-	private $family;
-	private $size;
-	private $bold = false;
-	private $italic = false;
+    private $family;
+    private $size;
+    private $bold = false;
+    private $italic = false;
 
-	/**
-	 * @var Color
-	 */
-	private $color;
+    /**
+     * @var Color
+     */
+    private $color;
 
-	/**
-	 * @return mixed
-	 */
-	public function getFamily()
-	{
-		return $this->family;
-	}
+    /**
+     * @return mixed
+     */
+    public function getFamily()
+    {
+        return $this->family;
+    }
 
-	/**
-	 * @param mixed $family
-	 */
-	public function setFamily($family)
-	{
-		$this->family = $family;
-	}
+    /**
+     * @param mixed $family
+     * @return $this
+     */
+    public function setFamily($family)
+    {
+        $this->family = $family;
 
-	/**
-	 * @return mixed
-	 */
-	public function getSize()
-	{
-		return $this->size;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param mixed $size
-	 */
-	public function setSize($size)
-	{
-		$this->size = $size;
-	}
+    /**
+     * @return mixed
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function isBold()
-	{
-		return $this->bold;
-	}
+    /**
+     * @param mixed $size
+     * @return $this
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isBold()
+    {
+        return $this->bold;
+    }
 
     /**
      * @param boolean $bold
      *
      * @return $this
      */
-	public function setBold($bold)
-	{
-		$this->bold = $bold;
+    public function setBold($bold)
+    {
+        $this->bold = $bold;
 
         return $this;
-	}
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function isItalic()
-	{
-		return $this->italic;
-	}
+    /**
+     * @return boolean
+     */
+    public function isItalic()
+    {
+        return $this->italic;
+    }
 
-	/**
-	 * @param boolean $italic
-	 */
-	public function setItalic($italic)
-	{
-		$this->italic = $italic;
-	}
+    /**
+     * @param boolean $italic
+     * @return $this
+     */
+    public function setItalic($italic)
+    {
+        $this->italic = $italic;
 
-	/**
-	 * @return Color
-	 */
-	public function getColor()
-	{
-		return $this->color;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param Color $color
-	 */
-	public function setColor($color)
-	{
-		$this->color = $color;
-	}
+    /**
+     * @return Color
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param Color $color
+     * @return $this
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+
+        return $this;
+    }
 }

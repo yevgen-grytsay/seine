@@ -34,10 +34,14 @@ class CellFormatting
 
     /**
      * @param Fill $fill
+     *
+     * @return $this
      */
     public function setFill(Fill $fill)
     {
         $this->fill = $fill;
+
+        return $this;
     }
 
 	/**
@@ -50,9 +54,13 @@ class CellFormatting
 
 	/**
 	 * @param Font $font
+     *
+     * @return $this
 	 */
 	public function setFont(Font $font)
 	{
 		$this->font = $font;
+
+        return $this;
 	}
 }

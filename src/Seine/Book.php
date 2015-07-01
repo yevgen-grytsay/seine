@@ -57,7 +57,7 @@ interface Book
 	public function getStyleSheetList();
 
     /**
-     * @return mixed
+     * @return DOMStylesheet
      */
     public function getDefaultStyleSheet();
 }
