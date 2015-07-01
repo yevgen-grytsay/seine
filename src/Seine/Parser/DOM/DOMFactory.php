@@ -143,7 +143,7 @@ final class DOMFactory implements Factory
         }
 
         $writerFactory = $this->getWriterFactoryByName($writerName);
-        $writer = call_user_func_array($writerFactory, [$book, $fp]);
+        $writer = call_user_func_array($writerFactory, array($book, $fp));
         $writer->setAutoCloseStream($config->getOption(Configuration::OPT_AUTO_CLOSE_STREAM, false));
         $writer->setConfig($config);
         return $writer;
