@@ -24,6 +24,7 @@ namespace Seine\Tests\Writer;
 
 require_once(dirname(dirname(__DIR__)) . '/bootstrap.php');
 
+use Seine\Parser\DOM\DOMCell;
 use Seine\Parser\DOM\DOMStylesheet;
 use Seine\Seine;
 use Seine\Configuration;
@@ -79,6 +80,30 @@ class OfficeOpenXML2007StreamWriterTest extends \PHPUnit_Framework_TestCase
         $doc->close();
 
         $expectedDir = __DIR__ . '/_files/expected_valid_xlsx/';
+        $this->assertZipEqualsActual($expectedDir, $actual_file);
+    }
+
+    public function testCellStyle()
+    {
+        $actual_file = __DIR__ . '/_tmp/actual_valid_cell_style.xlsx';
+
+        $doc = $this->seine->newDocument($actual_file);
+        $sheet = $doc->newSheet('more1');
+
+        /**
+         * @var DOMStylesheet $styleSheet
+         */
+        $styleSheet = $doc->getDefaultStyleSheet();
+        $formatting = $styleSheet->newFormatting();
+
+        $cell = new DOMCell();
+        $cell->setValue('head1');
+        $cell->setFormatting($formatting);
+        $sheet->addRow($this->seine->getRow(array($cell, 'head2', 'head3', 'head4')));
+
+        $doc->close();
+
+        $expectedDir = __DIR__ . '/_files/expected_cell_style/';
         $this->assertZipEqualsActual($expectedDir, $actual_file);
     }
 

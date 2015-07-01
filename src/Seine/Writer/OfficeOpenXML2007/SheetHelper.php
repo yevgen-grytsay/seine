@@ -23,6 +23,7 @@
 namespace Seine\Writer\OfficeOpenXML2007;
 
 use Seine\Book;
+use Seine\Parser\DOM\DOMCell;
 use Seine\Row;
 use Seine\Sheet;
 use Seine\Style;
@@ -77,15 +78,25 @@ final class SheetHelper
         $rowId = ++$this->rowId;
         $out = '        <row r="' . $rowId . '">' . MyWriter::EOL;
         foreach($row->getCells() as $cell) {
+            $value = $cell;
+            $cellStyleId = $styleId;
+            if ($cell instanceof DOMCell) {
+                $value = $cell->getValue();
+                $formatting = $cell->getFormatting();
+                if ($formatting && $formats->contains($formatting)) {
+                    $cellStyleId = $formats->offsetGet($formatting);
+                }
+            }
+
             $out .= '            <c r="' . $columnId . $rowId . '"';
-            $out .= ' s="' . $styleId . '"';
-            if(is_numeric($cell)) {
-                $out .= '><v>' . $cell . '</v></c>' . MyWriter::EOL;
+            $out .= ' s="' . $cellStyleId . '"';
+            if(is_numeric($value)) {
+                $out .= '><v>' . $value . '</v></c>' . MyWriter::EOL;
             } else {
-                if (empty($cell)) {
+                if (empty($value)) {
                     $out .= '/>' . MyWriter::EOL;
                 } else {
-                    $sharedStringId = $this->sharedStrings->writeString($cell);
+                    $sharedStringId = $this->sharedStrings->writeString($value);
                     $out .= ' t="s"><v>' . $sharedStringId . '</v></c>' . MyWriter::EOL;
                 }
             }
