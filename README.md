@@ -1,85 +1,41 @@
 Seine
 =====
 
-[![Build Status](https://travis-ci.org/martinvium/seine.svg)](https://travis-ci.org/martinvium/seine)
+This is the fork of the https://github.com/martinvium/seine repository.
+It aims to add new cell formatting features.
 
-Write spreadsheets of various formats to a stream
 
-Low memory, high performance library for writing large spreadsheets in various standard formats. 
-Only a small subset of features are included, which means row level styling and right now, no 
-formulas either.
+Limitations
+===========
 
-Memory: Everything is written to disk (stream), so memory overhead is pretty much zero.
-Speed:  It's pretty damn fast! However because of the memory constraint, it's not mindblowing.
+Package is under construction and thus have some limitations:
 
-Stability
----------
+* Can not apply formatting to a specific cell or to a group of cells.
 
-This library is ALPHA/BETA quality.
 
-Dependencies
-------------
+Example
+=======
 
-* PHP 5.3
-* ZipArchive (only OOXML and you can create your own zip compressor, if you prefer another solution)
-
-Writers
--------
-
-* Office Open XML Spreadsheet (.xlsx)
-* Microsoft Excel 2003 XML (.xml)
-* CSV (.csv)
-
-Examples
---------
-
-Create a new document and close it after you done.
+This example demonstrates how to apply fill to a row.
 
 ```php
 <?php
-use Seine\Seine;
+$fp = fopen('example.xlsx', 'w');
+$configuration = new \Seine\Configuration();
+$configuration->setOption(\Seine\Configuration::OPT_WRITER, 'OfficeOpenXML2007StreamWriter');
+$factory = new \Seine\Parser\DOM\DOMFactory();
+$writer = $factory->getConfiguredWriter($fp, $configuration);
+$book = $factory->getConfiguredBook($fp, $configuration);
+$sheet = $book->newSheet();
 
-// writer options are: csv, ooxml2007, oxml2003
-$seine = new Seine(array('writer' => 'ooxml2007'));
-$doc = $seine->newDocument('example.xlsx');
+$fill = $styleSheet->newPatternFill();
+$fill->setBgColor(new \Seine\Parser\DOMStyle\Color('FFFFFFFF'));
+$fill->setFgColor(new \Seine\Parser\DOMStyle\Color('FF000000'));
+$format = $styleSheet->newFormatting();
+$format->setFill($fill);
 
-// add rows and styles...
-
-$doc->close();
-?>
-```
-
-Create a new document using an existing stream
-
-```php
-<?php
-$fp = fopen('filename.csv', 'w');
-$doc = $seine->newDocumentFromStream($fp);
-$doc->close();
-fclose($fp);
-?>
-```
-
-Add 100.000 rows with 25 columns in ~25 seconds.
-
-```php
-<?php
-$sheet = $doc->newSheet();
-for($i = 0; $i < 100000; $i++) {
-    $sheet->addRow(range(0, 25));
-}
-?>
-```
-
-Add styling to a row.
-
-```php
-<?php
-$style = $doc->newStyle()
-             ->setFontBold(true)
-             ->setFontFamily('Aria')
-             ->setFontSize('14');
-$row = $seine->getRow(array('cell1', 'cell2'));
-$row->addStyle($style);
+$row = $factory->getRow(['a', 'b', 'c']);
+$row->setStyle($format);
+$sheet->addRow($row);
 ?>
 ```
