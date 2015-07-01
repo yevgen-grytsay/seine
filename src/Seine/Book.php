@@ -55,4 +55,9 @@ interface Book
 	 * @return DOMStylesheet[]
 	 */
 	public function getStyleSheetList();
+
+    /**
+     * @return mixed
+     */
+    public function getDefaultStyleSheet();
 }

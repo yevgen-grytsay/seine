@@ -186,6 +186,5 @@ EOD;
 
     public function setConfig(Configuration $config)
     {
-
     }
 }

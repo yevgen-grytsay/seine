@@ -194,6 +194,6 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     {
         $stylesHelper = new StylesRender();
         $filename = $this->dataDir . DIRECTORY_SEPARATOR . 'styles.xml';
-        $this->createWorkingFile($filename, $stylesHelper->render($book->getStyleSheetList()[0]));
+        $this->createWorkingFile($filename, $stylesHelper->render($book->getDefaultStyleSheet()));
     }
 }

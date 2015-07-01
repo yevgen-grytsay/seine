@@ -68,7 +68,7 @@ final class SheetHelper
     public function writeRow(Book $book, Sheet $sheet, Row $row)
     {
         $styleId = 0;
-        $formats = $book->getStyleSheetList()[0]->getFormats();
+        $formats = $book->getDefaultStyleSheet()->getFormats();
         $style = $row->getStyle();
         if ($style && $formats->contains($style)) {
             $styleId = $formats->offsetGet($style);
