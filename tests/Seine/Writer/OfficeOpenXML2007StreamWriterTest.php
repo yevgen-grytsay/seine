@@ -24,11 +24,15 @@ namespace Seine\Tests\Writer;
 
 require_once(dirname(dirname(__DIR__)) . '/bootstrap.php');
 
+use Seine\Parser\DOM\DOMStylesheet;
 use Seine\Seine;
 use Seine\Configuration;
 
 class OfficeOpenXML2007StreamWriterTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Seine
+     */
     private $seine;
     
     public function setUp()
@@ -54,9 +58,16 @@ class OfficeOpenXML2007StreamWriterTest extends \PHPUnit_Framework_TestCase
             ));
         }
 
+        /**
+         * @var DOMStylesheet $styleSheet
+         */
         $sheet = $doc->newSheet('mor"e2');
-        $style = $doc->newStyle()->setFontBold(true);
-        $sheet->addRow($this->seine->getRow(array('head1', 'head2', 'head3', 'head4'))->setStyle($style));
+        $styleSheet = $doc->getDefaultStyleSheet();
+        $formatting = $styleSheet->newFormatting();
+        $font = $styleSheet->newFont()->setBold(true);
+        $formatting->setFont($font);
+
+        $sheet->addRow($this->seine->getRow(array('head1', 'head2', 'head3', 'head4'))->setStyle($formatting));
         for($i = 0; $i < 10; $i++) {
             $sheet->addRow(array(
                 'cell1',
@@ -131,7 +142,13 @@ class OfficeOpenXML2007StreamWriterTest extends \PHPUnit_Framework_TestCase
             }
 
             $actualContent = $zip->getFromIndex($i);
-            $this->assertStringEqualsFile($expectedDir . $expectedFilename, $actualContent);
+
+            if ($actualContent == '') {
+                $this->assertStringEqualsFile($expectedDir . $expectedFilename, $actualContent);
+            } else {
+                $this->assertXmlStringEqualsXmlFile($expectedDir . $expectedFilename, $actualContent);
+            }
+
         }
         $zip->close();
     }

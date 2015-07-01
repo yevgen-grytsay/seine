@@ -23,6 +23,7 @@
  */
 namespace Seine\Writer;
 
+use Seine\Parser\DOM\DOMStylesheet;
 use Seine\Writer;
 use Seine\Row;
 use Seine\Book;
@@ -41,12 +42,20 @@ class OfficeXML2003StreamWriter implements Writer
 
     private $autoCloseStream = false;
 
-    public function __construct($stream)
+
+    /**
+     * @var Book
+     */
+    private $book;
+
+
+    public function __construct(Book $book, $stream)
     {
         if(! is_resource($stream)) {
             throw new \InvalidArgumentException('fp is not a valid stream resource');
         }
 
+        $this->book = $book;
         $this->stream = $stream;
     }
 
@@ -63,14 +72,14 @@ class OfficeXML2003StreamWriter implements Writer
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' . self::EOL);
     }
 
-    public function endBook(Book $book)
+    public function endBook()
     {
-        $this->writeStyles($book->getFormats());
+        $this->writeStyles($this->book->getDefaultStyleSheet()->getFormats());
         $this->writeSheets($this->sheets);
         $this->writeStream($this->stream, '</Workbook>');
     }
 
-    public function startSheet(Book $book, Sheet $sheet)
+    public function startSheet(Sheet $sheet)
     {
         $stream = fopen('php://temp', 'w+');
         $dataSheet = new Xml2003Sheet($stream);
@@ -123,7 +132,7 @@ class OfficeXML2003StreamWriter implements Writer
         $this->writeStream($this->stream, $out);
     }
 
-    public function endSheet(Book $book, Sheet $sheet)
+    public function endSheet(Sheet $sheet)
     {
         $out = <<<EOD
         </Table>
@@ -143,7 +152,18 @@ EOD;
             throw new \Exception(sprintf("Cant write row: sheet already closed (sheet: '%s')", $sheet->getId()));
         }
 
-        $strStyle = ($row->getStyle() ? ' ss:StyleID="' . $this->escape($row->getStyle()->getId()) . '"' : '');
+
+        /**
+         * @var DOMStylesheet $styleSheet
+         */
+        $formatting = $row->getStyle();
+        $styleSheet = $this->book->getDefaultStyleSheet();
+        $formatStorage = $styleSheet->getFormats();
+        $formatId = null;
+        if ($formatting && $formatStorage->contains($formatting)) {
+            $formatId = $formatStorage->offsetGet($formatting);
+        }
+        $strStyle = ($formatting ? ' ss:StyleID="' . $this->escape($formatId) . '"' : '');
 
         $out = '            <Row>';
         foreach($row->getCells() as $cell) {

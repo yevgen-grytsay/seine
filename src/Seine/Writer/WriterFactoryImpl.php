@@ -22,35 +22,42 @@
  */
 namespace Seine\Writer;
 
+use Seine\Book;
 use Seine\WriterFactory;
 use Seine\ZipArchiveCompressor;
 
 class WriterFactoryImpl implements WriterFactory
 {
     /**
-     * @param stream $stream
-     * @return OfficeOpenXML2007StreamWriter 
+     * @param \Seine\Book $book
+     * @param resource $stream
+     *
+     * @return \Seine\Writer\OfficeOpenXML2007StreamWriter
      */
-    public function getOfficeOpenXML2007StreamWriter($stream)
+    public function getOfficeOpenXML2007StreamWriter(Book $book, $stream)
     {
         $compressor = new ZipArchiveCompressor;
-        return new OfficeOpenXML2007StreamWriter($stream, $compressor);
+        return new OfficeOpenXML2007StreamWriter($book, $stream, $compressor);
     }
-    
+
     /**
-     * @param stream $stream
-     * @return OfficeXml2003StreamWriter 
+     * @param \Seine\Book $book
+     * @param resource $stream
+     *
+     * @return \Seine\Writer\OfficeXml2003StreamWriter
      */
-    public function getOfficeXML2003StreamWriter($stream)
+    public function getOfficeXML2003StreamWriter(Book $book, $stream)
     {
-        return new OfficeXML2003StreamWriter($stream);
+        return new OfficeXML2003StreamWriter($book, $stream);
     }
-    
+
     /**
-     * @param stream $stream
-     * @return CsvStreamWriter 
+     * @param \Seine\Book $book
+     * @param resource $stream
+     *
+     * @return \Seine\Writer\CsvStreamWriter
      */
-    public function getCsvStreamWriter($stream)
+    public function getCsvStreamWriter(Book $book, $stream)
     {
         return new CsvStreamWriter($stream);
     }

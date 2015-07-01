@@ -24,9 +24,9 @@ namespace Seine;
 
 interface WriterFactory 
 {
-    public function getOfficeOpenXML2007StreamWriter($stream);
+    public function getOfficeOpenXML2007StreamWriter(Book $book, $stream);
     
-    public function getOfficeXML2003StreamWriter($stream);
+    public function getOfficeXML2003StreamWriter(Book $book, $stream);
     
-    public function getCsvStreamWriter($stream);
+    public function getCsvStreamWriter(Book $book, $stream);
 }

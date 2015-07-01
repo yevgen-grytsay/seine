@@ -55,10 +55,15 @@ final class DOMBook extends DOMElement implements Book
     {
         parent::__construct($factory);
 
-		$sheet = $this->newStyleSheet();
-		$sheet->newPatternFill()->setPatternType(PatternFill::PATTERN_NONE);
-		$sheet->newPatternFill()->setPatternType(PatternFill::PATTERN_GRAY_125);
-		$sheet->newFont();
+		$this->newStyleSheet();
+    }
+
+    /**
+     * @return \Seine\Parser\DOM\DOMStylesheet
+     */
+    public function getDefaultStyleSheet()
+    {
+        return $this->styleSheetList[0];
     }
 
     public function setWriter(Writer $writer)

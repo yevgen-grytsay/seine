@@ -64,7 +64,7 @@ final class SheetHelper
         fwrite($this->stream, '    <sheetData>' . MyWriter::EOL);
     }
 
-    public function writeRow(Book $book, Row $row)
+    public function writeRow(Book $book, Sheet $sheet, Row $row)
     {
         $styleId = 0;
         $formats = $book->getStyleSheetList()[0]->getFormats();

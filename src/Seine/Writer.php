@@ -26,13 +26,13 @@ interface Writer
 {
     public function writeRow(Sheet $sheet, Row $row);
 
-    public function startSheet(Book $book, Sheet $sheet);
+    public function startSheet(Sheet $sheet);
 
-    public function endSheet(Book $book, Sheet $sheet);
+    public function endSheet(Sheet $sheet);
 
     public function startBook(Book $book);
 
-    public function endBook(Book $book);
+    public function endBook();
 
     public function setConfig(Configuration $config);
 

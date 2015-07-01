@@ -83,19 +83,19 @@ class CsvStreamWriter implements Writer
 
     }
 
-    public function endBook(Book $book)
+    public function endBook()
     {
         if($this->autoCloseStream) {
             fclose($this->stream);
         }
     }
 
-    public function startSheet(Book $book, Sheet $sheet)
+    public function startSheet(Sheet $sheet)
     {
 
     }
 
-    public function endSheet(Book $book, Sheet $sheet)
+    public function endSheet(Sheet $sheet)
     {
 
     }

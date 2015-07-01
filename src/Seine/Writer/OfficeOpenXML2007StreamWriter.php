@@ -22,14 +22,15 @@
  */
 namespace Seine\Writer;
 
-use Seine\Row;
 use Seine\Book;
-use Seine\Sheet;
-use Seine\Writer\OfficeOpenXML2007\WriterBase;
-use Seine\Writer\OfficeOpenXML2007\SharedStringsHelper;
-use Seine\Writer\OfficeOpenXML2007\StylesRender;
-use Seine\Writer\OfficeOpenXML2007\SheetHelper;
+use Seine\Compressor;
 use Seine\Configuration;
+use Seine\Row;
+use Seine\Sheet;
+use Seine\Writer\OfficeOpenXML2007\SharedStringsHelper;
+use Seine\Writer\OfficeOpenXML2007\SheetHelper;
+use Seine\Writer\OfficeOpenXML2007\StylesRender;
+use Seine\Writer\OfficeOpenXML2007\WriterBase;
 
 /**
  * @link http://www.ecma-international.org/publications/standards/Ecma-376.htm
@@ -51,6 +52,22 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
      */
     private $sheetHelpers = array();
 
+    /**
+     * @var Book
+     */
+    private $book;
+
+    /**
+     * @param \Seine\Book $book
+     * @param resource $stream
+     * @param \Seine\Compressor $compressor
+     */
+    public function __construct(Book $book, $stream, Compressor $compressor)
+    {
+        $this->book = $book;
+        parent::__construct($stream, $compressor);
+    }
+
     public function setConfig(Configuration $config)
     {
         $this->setTempDir($config->getOption(self::OPT_TEMP_DIR, $this->tempDir));
@@ -70,7 +87,7 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
         $this->sharedStrings->start();
     }
     
-    public function startSheet(Book $book, Sheet $sheet)
+    public function startSheet(Sheet $sheet)
     {
         $filename = $this->sheetDir . DIRECTORY_SEPARATOR . 'sheet' . $sheet->getId() . '.xml';
         $this->createEmptyWorkingFile($filename);
@@ -79,18 +96,19 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
         $this->sheetHelpers[$sheet->getId()] = $sheetHelper;
     }
     
-    public function writeRow(Book $book, Sheet $sheet, Row $row)
+    public function writeRow(Sheet $sheet, Row $row)
     {
-        $this->sheetHelpers[$sheet->getId()]->writeRow($book, $row);
+        $this->sheetHelpers[$sheet->getId()]->writeRow($this->book, $sheet, $row);
     }
     
-    public function endSheet(Book $book, Sheet $sheet)
+    public function endSheet(Sheet $sheet)
     {
         $this->sheetHelpers[$sheet->getId()]->end();
     }
     
-    public function endBook(Book $book)
+    public function endBook()
     {
+        $book = $this->book;
         $this->sharedStrings->end();
         $this->createBookFile($book->getSheets());
         $this->createStylesFile($book);

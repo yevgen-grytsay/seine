@@ -68,12 +68,16 @@ class Font
 		return $this->bold;
 	}
 
-	/**
-	 * @param boolean $bold
-	 */
+    /**
+     * @param boolean $bold
+     *
+     * @return $this
+     */
 	public function setBold($bold)
 	{
 		$this->bold = $bold;
+
+        return $this;
 	}
 
 	/**

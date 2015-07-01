@@ -50,6 +50,7 @@ class DOMStylesheet
 		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_NONE);
 		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_GRAY_125);
 		$this->newFont();
+        $this->newFormatting();
 	}
 
 	/**

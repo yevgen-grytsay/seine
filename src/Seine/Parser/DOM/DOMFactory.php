@@ -110,26 +110,28 @@ final class DOMFactory implements Factory
      * Get a Book already configured with a writer and options from the default configuration
      * or the $config param if passed in.
      *
-     * @param stream $fp
+     * @param resource $fp
      * @param Configuration $config
      * @return Book
      */
     public function getConfiguredBook($fp, Configuration $config = null)
     {
         $book = $this->getBook();
-        $book->setWriter($this->getConfiguredWriter($fp, $config));
+        $book->setWriter($this->getConfiguredWriter($book, $fp, $config));
         return $book;
     }
 
-	/**
-	 * Get a writer configured using the default configuration or the one passed in.
-	 *
-	 * @param stream $fp
-	 * @param Configuration $config
-	 * @return Writer
-	 * @throws \Exception
-	 */
-    public function getConfiguredWriter($fp, Configuration $config = null)
+    /**
+     * Get a writer configured using the default configuration or the one passed in.
+     *
+     * @param \Seine\Book $book
+     * @param resource $fp
+     * @param Configuration $config
+     *
+     * @return \Seine\Writer
+     * @throws \Exception
+     */
+    public function getConfiguredWriter(Book $book, $fp, Configuration $config = null)
     {
         if(! $config) {
             $config = $this->config;
@@ -140,7 +142,8 @@ final class DOMFactory implements Factory
             throw new \Exception('Writer must be defined in config for getConfiguredWriter()');
         }
 
-        $writer = $this->getWriterByName($fp, $writerName);
+        $writerFactory = $this->getWriterFactoryByName($writerName);
+        $writer = call_user_func_array($writerFactory, [$book, $fp]);
         $writer->setAutoCloseStream($config->getOption(Configuration::OPT_AUTO_CLOSE_STREAM, false));
         $writer->setConfig($config);
         return $writer;
@@ -150,15 +153,16 @@ final class DOMFactory implements Factory
      * Get a writer by it's name. The name is looked up in the writer factory prefixed with "get".
      *
      * @example $writer = $factory->getWriterByName($fp, 'OfficeOpenXML2003StreamWriter');
-     * @param stream $fp
+     *
      * @param string $writerName
-     * @return Writer
+     *
+     * @return callable
      */
-    public function getWriterByName($fp, $writerName)
+    public function getWriterFactoryByName($writerName)
     {
         $method = 'get' . $writerName;
         if(method_exists($this->getWriterFactory(), $method)) {
-            return $this->getWriterFactory()->$method($fp);
+            return array($this->getWriterFactory(), $method);
         } else {
             throw new \InvalidArgumentException('writer not found: ' . $writerName);
         }

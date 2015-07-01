@@ -149,9 +149,10 @@ final class StylesRender
     private function buildCellStyles()
     {
         return '
-		<cellStyleXfs count="1">
-			<xf fontId="0" fillId="0" borderId="0" />
-		</cellStyleXfs>';
+    <cellStyleXfs count="1">
+        <xf fontId="0" fillId="0" borderId="0" />
+    </cellStyleXfs>
+';
     }
 
     private function buildCellXfs(DOMStylesheet $styleSheet)

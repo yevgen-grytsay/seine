@@ -57,12 +57,11 @@ interface Factory
      * @param Configuration $config
      * @return Writer
      */
-    public function getConfiguredWriter($fp, Configuration $config = null);
+    public function getConfiguredWriter(Book $book, $fp, Configuration $config = null);
 
     /**
-     * @param stream $fp
      * @param string $writerName
      * @return Writer
      */
-    public function getWriterByName($fp, $writerName);
+    public function getWriterFactoryByName($writerName);
 }
