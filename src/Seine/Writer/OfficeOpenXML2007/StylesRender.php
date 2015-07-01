@@ -70,6 +70,13 @@ final class StylesRender
             $data .= '            <sz val="' . ($font->getSize() ? $font->getSize() : self::FONT_SIZE_DEFAULT) . '"/>' . MyWriter::EOL;
             $data .= '            <name val="' . ($font->getFamily() ? $font->getFamily() : self::FONT_FAMILY_DEFAULT) . '"/>' . MyWriter::EOL;
             $data .= '            <family val="2"/>' . MyWriter::EOL; // no clue why this needs to be there
+
+            $color = $font->getColor();
+            if ($color && $color->getRgb()) {
+                $rgb = $color->getRgb();
+                $data .= '            <color rgb="' . $rgb . '"/>' . MyWriter::EOL;
+            }
+
             $data .= '        </font>' . MyWriter::EOL;
         }
         $data .= '    </fonts>' . MyWriter::EOL;

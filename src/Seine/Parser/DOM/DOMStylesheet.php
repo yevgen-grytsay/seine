@@ -8,7 +8,6 @@
 
 namespace Seine\Parser\DOM;
 
-
 use Seine\Parser\CellFormatting;
 use Seine\Parser\DOMStyle\Color;
 use Seine\Parser\DOMStyle\Font;
@@ -54,70 +53,79 @@ class DOMStylesheet
 	}
 
 	/**
-	 * @return CellFormatting
+     * @return PatternFill
 	 */
-	public function newFormatting()
+    public function newPatternFill()
 	{
-		$format = $this->createFormatting();
-		$this->formats->attach($format, $this->formats->count());
+        $fill = $this->createPatternFill();
+        $this->fills->attach($fill, $this->fills->count());
 
-		return $format;
+        return $fill;
 	}
 
 	/**
 	 * @return PatternFill
 	 */
-	public function newPatternFill()
+    private function createPatternFill()
 	{
-		$fill = $this->createPatternFill();
-		$this->fills->attach($fill, $this->fills->count());
-
-		return $fill;
+        return new PatternFill();
 	}
 
 	/**
-	 * @return Color
+     * @return Font
 	 */
-	public function newColor()
+    public function newFont()
 	{
-		$color = $this->createColor();
-		$this->colors->attach($color, $this->colors->count());
+        $font = $this->createFont();
+        $this->fonts->attach($font, $this->fonts->count());
 
-		return $color;
+        return $font;
+	}
+
+    /**
+     * @return \Seine\Parser\DOMStyle\Font
+     */
+    private function createFont()
+	{
+        return new Font();
 	}
 
 	/**
-	 * @return Font
+     * @return CellFormatting
 	 */
-	public function newFont()
+    public function newFormatting()
 	{
-		$font = $this->createFont();
-		$this->fonts->attach($font, $this->fonts->count());
+        $format = $this->createFormatting();
+        $this->formats->attach($format, $this->formats->count());
 
-		return $font;
+        return $format;
 	}
 
-	/**
-	 * @return PatternFill
-	 */
-	public function createPatternFill()
+    /**
+     * @return \Seine\Parser\CellFormatting
+     */
+    private function createFormatting()
+    {
+        return new CellFormatting();
+    }
+
+    /**
+     * @return Color
+     */
+    public function newColor()
 	{
-		return new PatternFill();
+        $color = $this->createColor();
+        $this->colors->attach($color, $this->colors->count());
+
+        return $color;
 	}
 
-	private function createColor()
+    /**
+     * @return \Seine\Parser\DOMStyle\Color
+     */
+    private function createColor()
 	{
-		return new Color();
-	}
-
-	private function createFont()
-	{
-		return new Font();
-	}
-
-	private function createFormatting()
-	{
-		return new CellFormatting();
+        return new Color();
 	}
 
 	/**
