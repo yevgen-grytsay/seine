@@ -14,7 +14,7 @@ namespace Seine\Parser\DOMStyle;
  * Class Font
  * @package Seine\Parser\DOMStyle
  */
-class Font
+class Font extends StylesheetElement
 {
     const FAMILY_SWISS = 2;
 

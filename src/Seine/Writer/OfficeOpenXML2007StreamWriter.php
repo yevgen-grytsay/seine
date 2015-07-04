@@ -27,6 +27,7 @@ use Seine\Compressor;
 use Seine\Configuration;
 use Seine\Row;
 use Seine\Sheet;
+use Seine\Writer\OfficeOpenXML2007\IdResolver;
 use Seine\Writer\OfficeOpenXML2007\SharedStringsHelper;
 use Seine\Writer\OfficeOpenXML2007\SheetHelper;
 use Seine\Writer\OfficeOpenXML2007\StylesRender;
@@ -192,8 +193,9 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
      */
     private function createStylesFile(Book $book)
     {
-        $stylesHelper = new StylesRender();
+        $render = new StylesRender();
+        $render->setIdResolver(new IdResolver());
         $filename = $this->dataDir . DIRECTORY_SEPARATOR . 'styles.xml';
-        $this->createWorkingFile($filename, $stylesHelper->render($book->getDefaultStyleSheet()));
+        $this->createWorkingFile($filename, $render->render($book->getDefaultStyleSheet()));
     }
 }

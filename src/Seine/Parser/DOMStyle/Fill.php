@@ -9,7 +9,6 @@
 namespace Seine\Parser\DOMStyle;
 
 
-class Fill
+class Fill extends StylesheetElement
 {
-
 }

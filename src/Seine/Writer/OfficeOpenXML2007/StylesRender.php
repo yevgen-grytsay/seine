@@ -27,12 +27,18 @@ use Seine\Parser\CellFormatting;
 use Seine\Parser\DOM\DOMStylesheet;
 use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
+use Seine\Parser\DOMStyle\StylesheetElement;
 use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
 
 final class StylesRender
 {
     const FONT_FAMILY_DEFAULT = 'Arial';
     const FONT_SIZE_DEFAULT = 10;
+
+    /**
+     * @var IdResolver
+     */
+    private $idResolver;
 
 	/**
 	 * Only one stylesheet supported so far.
@@ -53,12 +59,13 @@ final class StylesRender
         return $data;
     }
 
-    private function buildStyleFonts(\SplObjectStorage $fonts)
+    private function buildStyleFonts(\Iterator $fonts)
     {
-        $data = '    <fonts count="' . count($fonts) . '">' . MyWriter::EOL;
+        $data = '';
 		/**
 		 * @var Font $font
 		 */
+        $count = 0;
         foreach($fonts as $font) {
             $data .= '        <font>' . MyWriter::EOL;
             if($font->isBold()) {
@@ -78,25 +85,23 @@ final class StylesRender
             }
 
             $data .= '        </font>' . MyWriter::EOL;
+            ++$count;
         }
         $data .= '    </fonts>' . MyWriter::EOL;
+        $data = '    <fonts count="' . $count . '">' . MyWriter::EOL.$data;
 
         return $data;
     }
 
-    private function buildFills(\SplObjectStorage $fillList)
+    private function buildFills(\Iterator $fillList)
     {
-        $count = $fillList->count();
-        //TODO: delegate to render
-        //TODO: support indexed colors
-
 		$doc = new \DOMDocument();
 		$doc->formatOutput = true;
 
 		$fillsNode = $doc->createElement('fills');
 		$doc->appendChild($fillsNode);
-		$fillsNode->setAttribute('count', $count);
 
+        $count = 0;
 		foreach ($fillList as $fill) {
 			$fillNode = $doc->createElement('fill');
 
@@ -117,7 +122,10 @@ final class StylesRender
 			}
 
 			$fillsNode->appendChild($fillNode);
+            ++$count;
 		}
+        $fillsNode->setAttribute('count', $count);
+
 		return $doc->saveXML($fillsNode);
         /**
          * @var Fill $fill
@@ -168,44 +176,45 @@ final class StylesRender
          * @var CellFormatting $format
          */
 		$formatList = $styleSheet->getFormats();
-        $i = 0;
-        $data = '    <cellXfs count="' . count($formatList) . '">' . MyWriter::EOL;
+        $count = 0;
+        $data = '';
         foreach($formatList as $format) {
-
-            //TODO: delegate to render
-            $fillId = $this->getFillIdForStyle($styleSheet, $format);
-			$fontId = $this->getFontIdForStyle($styleSheet, $format);
+            $fillId = $this->resolveStyleElementId($format->getFill());
+			$fontId = $this->resolveStyleElementId($format->getFont());
 
 			//numFmtId="0"
             $data .= '        <xf fontId="'. $fontId .'" fillId="'. $fillId .'" borderId="0" xfId="0" />' . MyWriter::EOL;
-            $i++;
+            $count++;
         }
         $data .= '    </cellXfs>' . MyWriter::EOL;
+        $data = '    <cellXfs count="' . $count . '">' . MyWriter::EOL . $data;
 
         return $data;
     }
 
-    private function getFillIdForStyle(DOMStylesheet $styleSheet, CellFormatting $style)
+    private function resolveStyleElementId($el)
     {
-        $fillId = 0;
-        $fill = $style->getFill();
-        $fillStorage = $styleSheet->getFills();
-        if ($fill && $fillStorage->contains($fill)) {
-            $fillId = $fillStorage->offsetGet($fill);
+        $id = 0;
+        if ($el instanceof StylesheetElement) {
+            $id = $this->idResolver->resolve($el);
         }
 
-        return $fillId;
+        return $id;
     }
 
-	private function getFontIdForStyle(DOMStylesheet $styleSheet, CellFormatting $style)
-	{
-		$fontId = 0;
-		$font = $style->getFont();
-		$fontStorage = $styleSheet->getFonts();
-		if ($font && $fontStorage->contains($font)) {
-			$fontId = $fontStorage->offsetGet($font);
-		}
+    /**
+     * @return IdResolver
+     */
+    public function getIdResolver()
+    {
+        return $this->idResolver;
+    }
 
-		return $fontId;
-	}
+    /**
+     * @param IdResolver $idResolver
+     */
+    public function setIdResolver(IdResolver $idResolver)
+    {
+        $this->idResolver = $idResolver;
+    }
 }

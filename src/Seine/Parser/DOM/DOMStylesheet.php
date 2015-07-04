@@ -16,22 +16,22 @@ use Seine\Parser\DOMStyle\PatternFill;
 class DOMStylesheet
 {
 	/**
-	 * @var \SplObjectStorage
+	 * @var \ArrayObject
 	 */
 	private $formats;
 
 	/**
-	 * @var \SplObjectStorage
+	 * @var \ArrayObject
 	 */
 	private $fills;
 
 	/**
-	 * @var \SplObjectStorage
+	 * @var \ArrayObject
 	 */
 	private $colors;
 
 	/**
-	 * @var \SplObjectStorage
+	 * @var \ArrayObject
 	 */
 	private $fonts;
 
@@ -40,12 +40,13 @@ class DOMStylesheet
 	 */
 	public function __construct()
 	{
-		$this->fills = new \SplObjectStorage();
-		$this->colors = new \SplObjectStorage();
-		$this->formats = new \SplObjectStorage();
-		$this->styles = new \SplObjectStorage();
-		$this->fonts = new \SplObjectStorage();
+		$this->fonts = new \ArrayObject();
+		$this->fills = new \ArrayObject();
+		$this->colors = new \ArrayObject();
+		$this->formats = new \ArrayObject();
+		$this->styles = new \ArrayObject();
 
+        //TODO: move to default stylesheet template
 		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_NONE);
 		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_GRAY_125);
 		$this->newFont();
@@ -57,18 +58,11 @@ class DOMStylesheet
 	 */
     public function newPatternFill()
 	{
-        $fill = $this->createPatternFill();
-        $this->fills->attach($fill, $this->fills->count());
+		$id = $this->fills->count();
+		$fill = new PatternFill($id);
+		$this->fills->append($fill);
 
         return $fill;
-	}
-
-	/**
-	 * @return PatternFill
-	 */
-    private function createPatternFill()
-	{
-        return new PatternFill();
 	}
 
 	/**
@@ -76,18 +70,11 @@ class DOMStylesheet
 	 */
     public function newFont()
 	{
-        $font = $this->createFont();
-        $this->fonts->attach($font, $this->fonts->count());
+		$id = count($this->fonts);
+		$font = new Font($id);
+		$this->fonts->append($font);
 
         return $font;
-	}
-
-    /**
-     * @return \Seine\Parser\DOMStyle\Font
-     */
-    private function createFont()
-	{
-        return new Font();
 	}
 
 	/**
@@ -95,68 +82,54 @@ class DOMStylesheet
 	 */
     public function newFormatting()
 	{
-        $format = $this->createFormatting();
-        $this->formats->attach($format, $this->formats->count());
+		$id = $this->formats->count();
+        $format = new CellFormatting($id);
+        $this->formats->append($format);
 
         return $format;
 	}
-
-    /**
-     * @return \Seine\Parser\CellFormatting
-     */
-    private function createFormatting()
-    {
-        return new CellFormatting();
-    }
 
     /**
      * @return Color
      */
     public function newColor()
 	{
-        $color = $this->createColor();
-        $this->colors->attach($color, $this->colors->count());
+		$id = $this->colors->count();
+        $color = new Color($id);
+        $this->colors->append($color);
 
         return $color;
 	}
 
-    /**
-     * @return \Seine\Parser\DOMStyle\Color
-     */
-    private function createColor()
-	{
-        return new Color();
-	}
-
 	/**
-	 * @return \SplObjectStorage
+	 * @return \Iterator
 	 */
 	public function getFormats()
 	{
-		return $this->formats;
+		return $this->formats->getIterator();
 	}
 
 	/**
-	 * @return \SplObjectStorage
+	 * @return \Iterator
 	 */
 	public function getFills()
 	{
-		return $this->fills;
+		return $this->fills->getIterator();
 	}
 
 	/**
-	 * @return \SplObjectStorage
+	 * @return \Iterator
 	 */
 	public function getColors()
 	{
-		return $this->colors;
+		return $this->colors->getIterator();
 	}
 
 	/**
-	 * @return \SplObjectStorage
+	 * @return \Iterator
 	 */
 	public function getFonts()
 	{
-		return $this->fonts;
+		return $this->fonts->getIterator();
 	}
 }

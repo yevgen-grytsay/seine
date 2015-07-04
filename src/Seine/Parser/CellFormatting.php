@@ -10,9 +10,9 @@ namespace Seine\Parser;
 
 use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
-use Seine\Style;
+use Seine\Parser\DOMStyle\StylesheetElement;
 
-class CellFormatting
+class CellFormatting extends StylesheetElement
 {
     /**
      * @var Fill

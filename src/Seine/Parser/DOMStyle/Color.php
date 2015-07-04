@@ -8,9 +8,15 @@
 
 namespace Seine\Parser\DOMStyle;
 
-
-class Color
+/**
+ * Class Color
+ * @package Seine\Parser\DOMStyle
+ */
+class Color extends StylesheetElement
 {
+    /**
+     * @var string
+     */
     protected $rgb;
 
     /**
