@@ -69,7 +69,7 @@ final class SheetHelper
     {
         $formats = $book->getDefaultStyleSheet()->getFormats();
         $style = $row->getStyle();
-        $styleId = $style->getId();
+        $styleId = ($style) ? $style->getId() : 0;
 
         $columnId = 'A';
         $rowId = ++$this->rowId;
@@ -80,9 +80,7 @@ final class SheetHelper
             if ($cell instanceof DOMCell) {
                 $value = $cell->getValue();
                 $formatting = $cell->getFormatting();
-                if ($formatting && $formats->contains($formatting)) {
-                    $cellStyleId = $formats->offsetGet($formatting);
-                }
+                $cellStyleId = ($formatting) ? $formatting->getId() : 0;
             }
 
             $out .= '            <c r="' . $columnId . $rowId . '"';
