@@ -11,6 +11,7 @@ namespace Seine\Parser\DOM;
 use Seine\Parser\CellFormatting;
 use Seine\Parser\DOMStyle\Color;
 use Seine\Parser\DOMStyle\Font;
+use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Parser\DOMStyle\PatternFill;
 
 class DOMStylesheet
@@ -34,6 +35,10 @@ class DOMStylesheet
 	 * @var \SplObjectStorage
 	 */
 	private $fonts;
+	/**
+	 * @var \SplObjectStorage
+	 */
+	private $numberFormats;
 
 	/**
 	 *
@@ -45,6 +50,7 @@ class DOMStylesheet
 		$this->formats = new \SplObjectStorage();
 		$this->styles = new \SplObjectStorage();
 		$this->fonts = new \SplObjectStorage();
+		$this->numberFormats = new \SplObjectStorage();
 
 		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_NONE);
 		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_GRAY_125);
@@ -121,6 +127,25 @@ class DOMStylesheet
 	}
 
     /**
+     * @param $formatString
+     *
+     * @return \Seine\Parser\DOMStyle\NumberFormat
+     */
+    public function newNumberFormat($formatString)
+    {
+        //TODO: обращение к числовому формату производится не через индекс, а через явно назначенный numFmtId
+        $format = $this->createNumberFormat($formatString);
+        $this->numberFormats->attach($format, $this->numberFormats->count());
+
+        return $format;
+    }
+
+    private function createNumberFormat($formatString)
+    {
+        return new NumberFormat($formatString);
+    }
+
+    /**
      * @return \Seine\Parser\DOMStyle\Color
      */
     private function createColor()
@@ -158,5 +183,13 @@ class DOMStylesheet
 	public function getFonts()
 	{
 		return $this->fonts;
+	}
+
+    /**
+     * @return \SplObjectStorage
+     */
+	public function getNumberFormats()
+	{
+		return $this->numberFormats;
 	}
 }

@@ -27,6 +27,7 @@ use Seine\Parser\CellFormatting;
 use Seine\Parser\DOM\DOMStylesheet;
 use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
+use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
 
 final class StylesRender
@@ -44,6 +45,7 @@ final class StylesRender
     {
         $data = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' . MyWriter::EOL;
+        $data .= $this->buildNumberFormats($styleSheet->getNumberFormats());
         $data .= $this->buildStyleFonts($styleSheet->getFonts());
         $data .= $this->buildFills($styleSheet->getFills());
         $data .= $this->buildBorders();
@@ -51,6 +53,40 @@ final class StylesRender
         $data .= $this->buildCellXfs($styleSheet);
         $data .= '</styleSheet>';
         return $data;
+    }
+
+    /**
+     * @param \SplObjectStorage $formats
+     *
+     * @return string
+     */
+    private function buildNumberFormats(\SplObjectStorage $formats)
+    {
+        $data = MyWriter::EOL .'    <numFmts count="' . $formats->count() . '">' . MyWriter::EOL;
+        $id = 164;
+        /** @var NumberFormat $format */
+        foreach ($formats as $format) {
+            $formats->offsetSet($format, $id);
+            $code = htmlentities($format->getFormatCode());
+            $data .= sprintf('        <numFmt numFmtId="%d" formatCode="%s"/>', $id, $code) . MyWriter::EOL;
+            ++$id;
+        }
+        $data .= '</numFmts>' . MyWriter::EOL;
+
+        return $data;
+//        return '
+//            <numFmts count="5">
+//                <numFmt numFmtId="164" formatCode="&quot;$&quot;#,##0.00"/>
+//                <numFmt numFmtId="165"
+//                formatCode="&quot;Yes&quot;;&quot;Yes&quot;;&quot;No&quot;"/>
+//                <numFmt numFmtId="166"
+//                formatCode="&quot;True&quot;;&quot;True&quot;;&quot;False&quot;"/>
+//                <numFmt numFmtId="167"
+//                formatCode="&quot;On&quot;;&quot;On&quot;;&quot;Off&quot;"/>
+//                <numFmt numFmtId="168"
+//                formatCode="[$€-2]\ #,##0.00_);[Red]\([$€-2]\ #,##0.00\)"/>
+//            </numFmts>
+//        ';
     }
 
     private function buildStyleFonts(\SplObjectStorage $fonts)
@@ -67,8 +103,8 @@ final class StylesRender
 			if($font->isItalic()) {
 				$data .= '            <i/>' . MyWriter::EOL;
 			}
-            $data .= '            <sz val="' . ($font->getSize() ? $font->getSize() : self::FONT_SIZE_DEFAULT) . '"/>' . MyWriter::EOL;
-            $data .= '            <name val="' . ($font->getFamily() ? $font->getFamily() : self::FONT_FAMILY_DEFAULT) . '"/>' . MyWriter::EOL;
+            $data .= '            <sz val="' . ($font->getSize() ?: self::FONT_SIZE_DEFAULT) . '"/>' . MyWriter::EOL;
+            $data .= '            <name val="' . ($font->getFamily() ?: self::FONT_FAMILY_DEFAULT) . '"/>' . MyWriter::EOL;
             $data .= '            <family val="2"/>' . MyWriter::EOL; // no clue why this needs to be there
 
             $color = $font->getColor();
@@ -175,9 +211,14 @@ final class StylesRender
             //TODO: delegate to render
             $fillId = $this->getFillIdForStyle($styleSheet, $format);
 			$fontId = $this->getFontIdForStyle($styleSheet, $format);
+            $numberFormatId = $this->getNumberFormatIdForStyle($styleSheet, $format);
 
-			//numFmtId="0"
-            $data .= '        <xf fontId="'. $fontId .'" fillId="'. $fillId .'" borderId="0" xfId="0" />' . MyWriter::EOL;
+            $numberFormatStr = '';
+            if ($numberFormatId) {
+                $numberFormatStr = sprintf('numFmtId="%d" applyNumberFormat="1"', $numberFormatId);
+            }
+
+            $data .= '        <xf fontId="'. $fontId .'" fillId="'. $fillId .'" borderId="0" xfId="0" '. $numberFormatStr .' />' . MyWriter::EOL;
             $i++;
         }
         $data .= '    </cellXfs>' . MyWriter::EOL;
@@ -208,4 +249,16 @@ final class StylesRender
 
 		return $fontId;
 	}
+
+    private function getNumberFormatIdForStyle(DOMStylesheet $styleSheet, CellFormatting $style)
+    {
+        $formatId = 0;
+        $format = $style->getNumberFormat();
+        $formatStorage = $styleSheet->getNumberFormats();
+        if ($format && $formatStorage->contains($format)) {
+            $formatId = $formatStorage->offsetGet($format);
+        }
+
+        return $formatId;
+    }
 }

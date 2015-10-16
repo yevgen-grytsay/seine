@@ -10,6 +10,7 @@ namespace Seine\Parser;
 
 use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
+use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Style;
 
 class CellFormatting
@@ -23,6 +24,10 @@ class CellFormatting
 	 * @var Font
 	 */
 	private $font;
+	/**
+	 * @var NumberFormat
+	 */
+	private $numberFormat;
 
 	/**
      * @return Fill
@@ -62,5 +67,21 @@ class CellFormatting
 		$this->font = $font;
 
         return $this;
+	}
+
+	/**
+	 * @return NumberFormat
+	 */
+	public function getNumberFormat()
+	{
+		return $this->numberFormat;
+	}
+
+	/**
+	 * @param NumberFormat $numberFormat
+	 */
+	public function setNumberFormat(NumberFormat $numberFormat)
+	{
+		$this->numberFormat = $numberFormat;
 	}
 }
