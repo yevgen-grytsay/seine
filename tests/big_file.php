@@ -7,7 +7,7 @@ use Seine\Parser\DOMStyle\PatternFill;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-function generator($rows, $cols)
+function generator($rows, $cols, $style)
 {
     $faker = \Faker\Factory::create();
     $array = new \SplFixedArray($rows);
@@ -16,7 +16,7 @@ function generator($rows, $cols)
         foreach (range(0, $cols - 1) as $j) {
 //            $row[$j] = $faker->text(15);
             $value = $faker->randomFloat();
-            $cell = new \YevgenGrytsay\Ooxml\Sheet\Cell($value);
+            $cell = new \YevgenGrytsay\Ooxml\Sheet\Cell($value, $style);
             $row[$j] = $cell;
         }
         $array->offsetSet($i, $row);
@@ -37,7 +37,6 @@ $book->setWriter(new \Seine\Writer\OfficeOpenXML2007StreamWriter($book, $fp, new
  * Style
  */
 $styles = $book->getDefaultStyleSheet();
-
 
 $defaultStyleConfig = array(
     //'color' => 'F2DEDE',
@@ -67,7 +66,7 @@ $emphasizeStyleConfig = array_merge_recursive($defaultStyleConfig, array(
     )
 ));
 
-//$defaultStyle = $book->defineStyle($defaultStyleConfig);
+$defaultStyle = $book->defineStyle($defaultStyleConfig);
 //$emphasizeStyle = $book->defineStyle($defaultStyleConfig);
 
 //$formatting = $styles->newFormatting();
@@ -84,7 +83,7 @@ $emphasizeStyleConfig = array_merge_recursive($defaultStyleConfig, array(
 //$defaultFormatting = $styles->newFormatting();
 
 $sheet = $book->getDefaultSheet();
-foreach (generator(2, 25) as $cells) {
+foreach (generator(2, 25, $defaultStyle) as $cells) {
 //    $style = $defaultStyle;
 //    if (mt_rand(1, 9) % 3 === 0) {
 //        $style = $emphasizeStyle;

@@ -45,9 +45,9 @@ final class StylesRender
     {
         $data = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' . MyWriter::EOL;
-        $data .= $this->buildNumberFormats($styleSheet->getNumberFormats());
+//        $data .= $this->buildNumberFormats($styleSheet->getNumberFormats());
         $data .= $this->buildStyleFonts($styleSheet->getFonts());
-        $data .= $this->buildFills($styleSheet->getFills());
+//        $data .= $this->buildFills($styleSheet->getFills());
         $data .= $this->buildBorders();
         $data .= $this->buildCellStyles();
         $data .= $this->buildCellXfs($styleSheet);
@@ -203,7 +203,7 @@ final class StylesRender
         /**
          * @var CellFormatting $format
          */
-		$formatList = $styleSheet->getFormats();
+		$formatList = $styleSheet->getStyles();
         $i = 0;
         $data = '    <cellXfs count="' . count($formatList) . '">' . MyWriter::EOL;
         foreach($formatList as $format) {

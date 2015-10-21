@@ -103,7 +103,7 @@ final class DOMBook extends DOMElement implements Book
     public function getDefaultSheet()
     {
         if (!array_key_exists(0, $this->sheets)) {
-            $this->addSheet(new DOMSheet($this->factory, $this->writer));
+            $this->addSheet(new DOMSheet($this->factory, $this->writer, $this->getDefaultStyleSheet()->getLookup()));
         }
         return $this->sheets[0];
     }
@@ -137,7 +137,7 @@ final class DOMBook extends DOMElement implements Book
 
     public function defineStyle(array $config = array())
     {
-        return $this->styleSheetList[0]->defineStyle($config);
+        return $this->getDefaultStyleSheet()->defineStyle($config);
     }
 
 	/**

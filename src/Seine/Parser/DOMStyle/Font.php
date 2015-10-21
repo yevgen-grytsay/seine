@@ -28,9 +28,23 @@ class Font
      */
     private $color;
 
+    /**
+     * Font constructor.
+     */
+    public function __construct()
+    {
+    }
+
+    /**
+     * @param array $config
+     * @return Font
+     */
     public static function createFromConfig(array $config = array())
     {
+        $font = new static();
+        $font->setColor(new Color('dedede'));
 
+        return $font;
     }
 
     /**

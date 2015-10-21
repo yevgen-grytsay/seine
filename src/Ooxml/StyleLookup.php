@@ -10,20 +10,26 @@ namespace YevgenGrytsay\Ooxml;
 class StyleLookup
 {
     /**
-     * @var array
+     * @var \SplObjectStorage
      */
-    private $styleMap = array();
+    private $styleMap;
 
     /**
      * StyleLookup constructor.
      *
-     * @param array $styleMap
+     * @param \ArrayObject $styleMap
      */
-    public function __construct(array $styleMap)
+    public function __construct(\ArrayObject $styleMap)
     {
         $this->styleMap = $styleMap;
     }
 
+    /**
+     * @param $reference
+     *
+     * @return mixed
+     * @throws \RuntimeException
+     */
     public function getStyleIdByReference($reference)
     {
         $hasStyle = $this->hasStyle($reference);
@@ -31,11 +37,11 @@ class StyleLookup
             throw new \RuntimeException(sprintf('Style not found'));
         }
 
-        return $this->styleMap[$reference];
+        return $reference;
     }
 
     public function hasStyle($reference)
     {
-        return array_key_exists($reference, $this->styleMap);
+        return $this->styleMap->offsetExists($reference);
     }
 }

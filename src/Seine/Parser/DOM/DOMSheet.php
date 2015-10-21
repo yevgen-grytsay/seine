@@ -27,6 +27,7 @@ use Seine\Sheet;
 use Seine\Row;
 use Seine\Writer;
 use Seine\Book;
+use YevgenGrytsay\Ooxml\StyleLookup;
 
 final class DOMSheet extends DOMElement implements Sheet
 {
@@ -40,17 +41,23 @@ final class DOMSheet extends DOMElement implements Sheet
     private $started = false;
 
     private $id;
+    /**
+     * @var \YevgenGrytsay\Ooxml\StyleLookup
+     */
+    private $styleLookup;
 
     /**
      * DOMSheet constructor.
      *
-     * @param DOMFactory $factory
-     * @param \Seine\Writer  $writer
+     * @param DOMFactory                       $factory
+     * @param \Seine\Writer                    $writer
+     * @param \YevgenGrytsay\Ooxml\StyleLookup $styleLookup
      */
-    public function __construct(DOMFactory $factory, Writer $writer)
+    public function __construct(DOMFactory $factory, Writer $writer, StyleLookup $styleLookup)
     {
         parent::__construct($factory);
         $this->writer = $writer;
+        $this->styleLookup = $styleLookup;
     }
 
     /**
@@ -107,7 +114,7 @@ final class DOMSheet extends DOMElement implements Sheet
             return;
         }
 
-        $this->writer->startSheet($this);
+        $this->writer->startSheet($this, $this->styleLookup);
         $this->started = true;
     }
 

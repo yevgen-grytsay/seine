@@ -22,11 +22,13 @@
  */
 namespace Seine;
 
+use YevgenGrytsay\Ooxml\StyleLookup;
+
 interface Writer
 {
     public function writeRow(Sheet $sheet, $row);
 
-    public function startSheet(Sheet $sheet);
+    public function startSheet(Sheet $sheet, StyleLookup $styleLookup);
 
     public function endSheet(Sheet $sheet);
 

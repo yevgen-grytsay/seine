@@ -9,10 +9,9 @@
 namespace Seine\Parser\DOM;
 
 use Seine\Parser\CellFormatting;
-use Seine\Parser\DOMStyle\Color;
 use Seine\Parser\DOMStyle\Font;
-use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Parser\DOMStyle\PatternFill;
+use YevgenGrytsay\Ooxml\StyleLookup;
 
 class DOMStylesheet
 {
@@ -45,134 +44,70 @@ class DOMStylesheet
 	 */
 	public function __construct()
 	{
-		$this->fills = new \SplObjectStorage();
-		$this->colors = new \SplObjectStorage();
-		$this->formats = new \SplObjectStorage();
-		$this->styles = new \SplObjectStorage();
-		$this->fonts = new \SplObjectStorage();
-		$this->numberFormats = new \SplObjectStorage();
+//		$this->fills = new \SplObjectStorage();
+//		$this->colors = new \SplObjectStorage();
+//		$this->formats = new \SplObjectStorage();
+//		$this->fonts = new \SplObjectStorage();
+//		$this->numberFormats = new \SplObjectStorage();
 
-		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_NONE);
-		$this->newPatternFill()->setPatternType(PatternFill::PATTERN_GRAY_125);
-		$this->newFont();
-        $this->newFormatting();
+		$this->fills = array();
+		$this->fills[] = new PatternFill(PatternFill::PATTERN_NONE);
+		$this->fills[] = new PatternFill(PatternFill::PATTERN_GRAY_125);
+
+		$this->fonts = new \SplObjectStorage();
+		$this->fonts->attach(new Font(), $this->fonts->count());
+
+		$this->styles = new \ArrayObject();
+		$this->styles[] = new CellFormatting();
+
+		$this->defineStyle(array());
 	}
 
+	/**
+	 * @param array $config
+	 *
+	 * @return int
+	 */
 	public function defineStyle(array $config = array())
 	{
+		$style = new CellFormatting();
+		foreach ($config as $key => $value) {
+			if ($key === 'font') {
+				$font = $this->createFont($value);
+				$style->setFont($font);
+			}
+		}
+		$this->styles[] = $style;
 
+		return count($this->styles) - 1;
 	}
-//
-////	public function defineFromTemplate(StyleDefinition $template, array $config)
-////	{
-////
-////	}
+
+	private function createFont(array $config = array())
+	{
+		$font = Font::createFromConfig($config);
+		$this->fonts->attach($font, $this->fonts->count());
+
+		return $font;
+	}
 
 	/**
-     * @return PatternFill
+	 * @return Font[]
 	 */
-    public function newPatternFill()
+	public function getFonts()
 	{
-        $fill = $this->createPatternFill();
-        $this->fills->attach($fill, $this->fills->count());
-
-        return $fill;
+		return $this->fonts;
 	}
 
 	/**
-	 * @return PatternFill
+	 * @return CellFormatting[]
 	 */
-    private function createPatternFill()
+	public function getStyles()
 	{
-        return new PatternFill();
+		return $this->styles;
 	}
 
 	/**
-     * @return Font
-	 */
-    public function newFont()
-	{
-        $font = $this->createFont();
-        $this->fonts->attach($font, $this->fonts->count());
-
-        return $font;
-	}
-
-    /**
-     * @return \Seine\Parser\DOMStyle\Font
-     */
-    private function createFont()
-	{
-        return new Font();
-	}
-
-	/**
-     * @return CellFormatting
-	 */
-    public function newFormatting()
-	{
-        $format = $this->createFormatting();
-        $this->formats->attach($format, $this->formats->count());
-
-        return $format;
-	}
-
-    /**
-     * @return \Seine\Parser\CellFormatting
-     */
-    private function createFormatting()
-    {
-        return new CellFormatting();
-    }
-
-    /**
-     * @return Color
-     */
-    public function newColor()
-	{
-        $color = $this->createColor();
-        $this->colors->attach($color, $this->colors->count());
-
-        return $color;
-	}
-
-    /**
-     * @param $formatString
-     *
-     * @return \Seine\Parser\DOMStyle\NumberFormat
-     */
-    public function newNumberFormat($formatString)
-    {
-        //TODO: обращение к числовому формату производится не через индекс, а через явно назначенный numFmtId
-        $format = $this->createNumberFormat($formatString);
-        $this->numberFormats->attach($format, $this->numberFormats->count());
-
-        return $format;
-    }
-
-    private function createNumberFormat($formatString)
-    {
-        return new NumberFormat($formatString);
-    }
-
-    /**
-     * @return \Seine\Parser\DOMStyle\Color
-     */
-    private function createColor()
-	{
-        return new Color();
-	}
-
-	/**
-	 * @return \SplObjectStorage
-	 */
-	public function getFormats()
-	{
-		return $this->formats;
-	}
-
-	/**
-	 * @return \SplObjectStorage
+	 * @return array
 	 */
 	public function getFills()
 	{
@@ -180,26 +115,15 @@ class DOMStylesheet
 	}
 
 	/**
-	 * @return \SplObjectStorage
+	 * @return array
 	 */
-	public function getColors()
-	{
-		return $this->colors;
-	}
-
-	/**
-	 * @return \SplObjectStorage
-	 */
-	public function getFonts()
-	{
-		return $this->fonts;
-	}
-
-    /**
-     * @return \SplObjectStorage
-     */
 	public function getNumberFormats()
 	{
 		return $this->numberFormats;
+	}
+
+	public function getLookup()
+	{
+		return new StyleLookup($this->styles);
 	}
 }

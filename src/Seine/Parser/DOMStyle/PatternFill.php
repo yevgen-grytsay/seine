@@ -8,6 +8,8 @@
 
 namespace Seine\Parser\DOMStyle;
 
+use Seine\Parser\DOMStyle\Color;
+
 /**
  * This element is used to specify cell fill information for pattern and solid color cell fills.
  * §18.8.32 Ecma Office Open XML Part 1 - Fundamentals And Markup Language Reference
@@ -51,6 +53,20 @@ class PatternFill extends Fill
 	 * @var Color
 	 */
 	protected $bgColor;
+
+	/**
+	 * PatternFill constructor.
+	 *
+	 * @param string                       $patternType
+	 * @param Color $fgColor
+	 * @param Color $bgColor
+	 */
+	public function __construct($patternType, Color $fgColor = null, Color $bgColor = null)
+	{
+		$this->patternType = $patternType;
+		$this->fgColor = $fgColor;
+		$this->bgColor = $bgColor;
+	}
 
 	/**
 	 * @return Color
