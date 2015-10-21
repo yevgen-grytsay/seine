@@ -8,6 +8,8 @@
 
 namespace Seine\Parser\DOMStyle;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
  * This element defines the properties for one of the fonts used in a workbook.
  *
@@ -17,6 +19,9 @@ namespace Seine\Parser\DOMStyle;
 class Font
 {
     const FAMILY_SWISS = 2;
+
+    const CONFIG_COLOR = 'color';
+    const CONFIG_SIZE = 'size';
 
     private $family;
     private $size;
@@ -41,8 +46,21 @@ class Font
      */
     public static function createFromConfig(array $config = array())
     {
+        $resolver = new OptionsResolver();
+        $resolver->setDefaults(array(
+            self::CONFIG_COLOR => null,
+            self::CONFIG_SIZE => 24
+        ));
+        $config = $resolver->resolve($config);
+
         $font = new static();
-        $font->setColor(new Color('ff0000'));
+        if ($config[self::CONFIG_COLOR]) {
+            $font->setColor(new Color($config[self::CONFIG_COLOR]));
+        }
+
+        if ($config[self::CONFIG_SIZE]) {
+            $font->setSize($config[self::CONFIG_SIZE]);
+        }
 
         return $font;
     }

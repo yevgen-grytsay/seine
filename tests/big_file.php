@@ -3,16 +3,26 @@
  * @author: Yevgen Grytsay hrytsai@mti.ua
  * @date  : 16.10.15
  */
+use Seine\Parser\DOMStyle\Fill;
+use Seine\Parser\DOMStyle\Font;
+use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Parser\DOMStyle\PatternFill;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-function generator($rows, $cols, $style)
+function generator($rows, $cols, $defaultStyle, $emphasizeStyle)
 {
     $faker = \Faker\Factory::create();
     $array = new \SplFixedArray($rows);
     foreach (range(0, $rows - 1) as $i) {
         $row = array();
+
+
+        $style = $defaultStyle;
+        if (mt_rand(1, 9) % 3 === 0) {
+            $style = $emphasizeStyle;
+        }
+
         foreach (range(0, $cols - 1) as $j) {
 //            $row[$j] = $faker->text(15);
             $value = $faker->randomFloat();
@@ -41,9 +51,8 @@ $styles = $book->getDefaultStyleSheet();
 $defaultStyleConfig = array(
     //'color' => 'F2DEDE',
     'font' => array(
-        'size'  => 12,
-        'name'  => 'Arial',
-        'color' => '000000'
+        Font::CONFIG_SIZE  => 12,
+        Font::CONFIG_COLOR => '000000'
     ),
     'fill' => array(
         'patternType' => PatternFill::PATTERN_SOLID,
@@ -51,24 +60,25 @@ $defaultStyleConfig = array(
         'fgColor'     => 'ededed'
     ),
     'numberFormat' => array(
-        'formatCode' => '[$₩-412]#,##0.00'
+        NumberFormat::CONFIG_FORMAT_CODE => '[$₩-412]#,##0.00'
 //        'formatCode' => '##0.00'
     )
 );
 
-$emphasizeStyleConfig = array_merge_recursive($defaultStyleConfig, array(
+$emphasizeStyleConfig = array(
     'font' => array(
-        'color' => 'ff0000'
+        Font::CONFIG_SIZE  => 24,
+        Font::CONFIG_COLOR => 'ff0000'
     ),
     'fill' => array(
-        'patternType' => PatternFill::PATTERN_SOLID,
-        'bgColor'     => '000000',
-        'fgColor'     => '000000'
+        Fill::CONFIG_PATTERN_TYPE => PatternFill::PATTERN_SOLID,
+        Fill::CONFIG_BACK_COLOR     => '000000',
+        Fill::CONFIG_FORE_COLOR     => '000000'
     )
-));
+);
 
 $defaultStyle = $book->defineStyle($defaultStyleConfig);
-//$emphasizeStyle = $book->defineStyle($defaultStyleConfig);
+$emphasizeStyle = $book->defineStyle($emphasizeStyleConfig);
 
 //$formatting = $styles->newFormatting();
 //$colorFill = $styles->newColor()->setRgb('F2DEDE');
@@ -84,7 +94,7 @@ $defaultStyle = $book->defineStyle($defaultStyleConfig);
 //$defaultFormatting = $styles->newFormatting();
 
 $sheet = $book->getDefaultSheet();
-foreach (generator(2, 25, $defaultStyle) as $cells) {
+foreach (generator(6000, 25, $defaultStyle, $emphasizeStyle) as $cells) {
 //    $style = $defaultStyle;
 //    if (mt_rand(1, 9) % 3 === 0) {
 //        $style = $emphasizeStyle;
