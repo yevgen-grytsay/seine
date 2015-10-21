@@ -22,11 +22,9 @@
  */
 namespace Seine\Parser\DOM;
 
-use Seine\Factory;
 use Seine\Sheet;
-use Seine\Row;
 use Seine\Writer;
-use Seine\Book;
+use YevgenGrytsay\Ooxml\DOM\CtCol;
 use YevgenGrytsay\Ooxml\StyleLookup;
 
 final class DOMSheet extends DOMElement implements Sheet
@@ -45,6 +43,10 @@ final class DOMSheet extends DOMElement implements Sheet
      * @var \YevgenGrytsay\Ooxml\StyleLookup
      */
     private $styleLookup;
+    /**
+     * @var array
+     */
+    private $cols = array();
 
     /**
      * DOMSheet constructor.
@@ -60,10 +62,12 @@ final class DOMSheet extends DOMElement implements Sheet
         $this->styleLookup = $styleLookup;
     }
 
-    /**
-     * @var Book
-     */
-    private $book;
+    public function setColsConfig(array $config = array())
+    {
+        foreach ($config as $col) {
+            $this->cols[] = new CtCol($col);
+        }
+    }
 
     public function getId()
     {
@@ -83,15 +87,10 @@ final class DOMSheet extends DOMElement implements Sheet
         }
     }
 
-    public function setBook(Book $book)
-    {
-        $this->book = $book;
-    }
-
     public function appendRow($data)
     {
-        $this->startSheet();
-        $this->writer->writeRow($this, $data);
+        $this->startOnce();
+        $this->writer->writeRow($this->getId(), $data);
     }
 
     public function setName($name)
@@ -104,7 +103,7 @@ final class DOMSheet extends DOMElement implements Sheet
         return $this->name;
     }
 
-    private function startSheet()
+    private function startOnce()
     {
         if(! $this->writer) {
             throw new \Exception('writer is undefined');
@@ -114,7 +113,7 @@ final class DOMSheet extends DOMElement implements Sheet
             return;
         }
 
-        $this->writer->startSheet($this, $this->styleLookup);
+        $this->writer->startSheet($this, $this->styleLookup, $this->cols);
         $this->started = true;
     }
 
@@ -125,5 +124,4 @@ final class DOMSheet extends DOMElement implements Sheet
         }
 
         $this->started = false;
-    }
-}
+    }}

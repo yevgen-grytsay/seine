@@ -26,9 +26,15 @@ use YevgenGrytsay\Ooxml\StyleLookup;
 
 interface Writer
 {
-    public function writeRow(Sheet $sheet, $row);
+    /**
+     * @param int $sheetId
+     * @param array $row
+     *
+     * @return mixed
+     */
+    public function writeRow($sheetId, array $row);
 
-    public function startSheet(Sheet $sheet, StyleLookup $styleLookup);
+    public function startSheet(Sheet $sheet, StyleLookup $styleLookup, array $cols);
 
     public function endSheet(Sheet $sheet);
 

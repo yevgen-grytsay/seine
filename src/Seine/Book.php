@@ -46,7 +46,7 @@ interface Book
     /**
      * @return Sheet
      */
-    public function getDefaultSheet();
+    public function startSheet();
 
 	/**
 	 * @return DOMStylesheet[]

@@ -25,6 +25,7 @@ namespace Seine\Writer\OfficeOpenXML2007;
 use Seine\IOException;
 use Seine\Sheet;
 use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
+use YevgenGrytsay\Ooxml\DOM\CtCol;
 use YevgenGrytsay\Ooxml\Sheet\Cell;
 use YevgenGrytsay\Ooxml\StyleLookup;
 
@@ -56,7 +57,12 @@ final class SheetHelper
         $this->styleLookup = $styleLookup;
     }
 
-    public function start()
+    /**
+     * @param CtCol[] $cols
+     *
+     * @throws \Seine\IOException
+     */
+    public function start(array $cols)
     {
         $this->stream = fopen($this->filename, 'w');
         if(! $this->stream) {
@@ -65,8 +71,21 @@ final class SheetHelper
 
         fwrite($this->stream, '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' . MyWriter::EOL);
-        fwrite($this->stream, '    <sheetData>' . MyWriter::EOL);
+
+        $doc = new \DOMDocument();
+        $doc->formatOutput = true;
+        $colsEl = $doc->createElement('cols');
+        $doc->appendChild($colsEl);
+        foreach ($cols as $col) {
+            $colsEl->appendChild($col->render($doc));
+        }
+        $colsXml = $doc->saveXML($colsEl);
+        fwrite($this->stream, $colsXml);
+
+        fwrite($this->stream, MyWriter::EOL.'    <sheetData>' . MyWriter::EOL);
     }
+
+
 
     public function writeRow($row)
     {

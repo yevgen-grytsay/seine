@@ -46,8 +46,6 @@ $book->setWriter(new \Seine\Writer\OfficeOpenXML2007StreamWriter($book, $fp, new
 /**
  * Style
  */
-$styles = $book->getDefaultStyleSheet();
-
 $defaultStyleConfig = array(
     //'color' => 'F2DEDE',
     'font' => array(
@@ -80,21 +78,26 @@ $emphasizeStyleConfig = array(
 $defaultStyle = $book->defineStyle($defaultStyleConfig);
 $emphasizeStyle = $book->defineStyle($emphasizeStyleConfig);
 
-//$formatting = $styles->newFormatting();
-//$colorFill = $styles->newColor()->setRgb('F2DEDE');
-//$colorFont = $styles->newColor()->setRgb('FF0000');
-//$font = $styles->newFont()->setColor($colorFont);
-//$fill = $styles->newPatternFill()
-//    ->setPatternType(PatternFill::PATTERN_SOLID)
-//    ->setBgColor($colorFill)
-//    ->setFgColor($colorFill);
-//$numberFormat = $styles->newNumberFormat('[$₩-412]#,##0.00');
-//$formatting->setFont($font)->setFill($fill)->setNumberFormat($numberFormat);
-//
-//$defaultFormatting = $styles->newFormatting();
 
-$sheet = $book->getDefaultSheet();
-foreach (generator(6000, 25, $defaultStyle, $emphasizeStyle) as $cells) {
+$sheet = $book->startSheet();
+$sheet->setColsConfig(array(
+    array(
+        \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_MAX => 1,
+        \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_MIN => 1,
+        \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_WIDTH => 100
+    ),
+    array(
+        \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_MAX => 2,
+        \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_MIN => 2,
+        \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_WIDTH => 50
+    ),
+    array(
+        \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_MAX => 3,
+        \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_MIN => 3,
+        \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_WIDTH => 25
+    )
+));
+foreach (generator(200, 25, $defaultStyle, $emphasizeStyle) as $cells) {
 //    $style = $defaultStyle;
 //    if (mt_rand(1, 9) % 3 === 0) {
 //        $style = $emphasizeStyle;

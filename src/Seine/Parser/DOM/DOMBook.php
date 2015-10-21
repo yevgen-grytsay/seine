@@ -85,7 +85,6 @@ final class DOMBook extends DOMElement implements Book
     
     public function addSheet(Sheet $sheet)
     {
-        $sheet->setBook($this);
         $sheet->setId($this->sheetId++);
         $this->startBook();
         
@@ -98,15 +97,26 @@ final class DOMBook extends DOMElement implements Book
     }
 
     /**
+     * @return DOMSheet
+     */
+    public function startSheet()
+    {
+        $sheet = new DOMSheet($this->factory, $this->writer, $this->getDefaultStyleSheet()->getLookup());
+        $this->addSheet($sheet);
+
+        return $sheet;
+    }
+
+    /**
      * @return Sheet
      */
-    public function getDefaultSheet()
-    {
-        if (!array_key_exists(0, $this->sheets)) {
-            $this->addSheet(new DOMSheet($this->factory, $this->writer, $this->getDefaultStyleSheet()->getLookup()));
-        }
-        return $this->sheets[0];
-    }
+//    public function getDefaultSheet()
+//    {
+//        if (!array_key_exists(0, $this->sheets)) {
+//            $this->addSheet(new DOMSheet($this->factory, $this->writer, $this->getDefaultStyleSheet()->getLookup()));
+//        }
+//        return $this->sheets[0];
+//    }
     
     private function startBook()
     {

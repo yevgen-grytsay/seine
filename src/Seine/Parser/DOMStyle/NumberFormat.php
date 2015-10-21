@@ -7,7 +7,6 @@
 namespace Seine\Parser\DOMStyle;
 
 
-use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NumberFormat

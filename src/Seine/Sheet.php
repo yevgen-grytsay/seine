@@ -24,14 +24,6 @@ namespace Seine;
 
 interface Sheet
 {
-	/**
-	 * @internal assigned by Book
-	 * @access private
-	 * @param Book $book
-	 * @return
-	 */
-    public function setBook(Book $book);
-
     /**
      * Add a row to the sheet and advance row index.
      *

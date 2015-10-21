@@ -88,19 +88,19 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
         $this->sharedStrings->start();
     }
     
-    public function startSheet(Sheet $sheet, StyleLookup $styleLookup)
+    public function startSheet(Sheet $sheet, StyleLookup $styleLookup, array $cols)
     {
         $filename = $this->sheetDir . DIRECTORY_SEPARATOR . 'sheet' . $sheet->getId() . '.xml';
         $this->createEmptyWorkingFile($filename);
 
         $sheetHelper = new SheetHelper($sheet, $this->sharedStrings, $filename, $styleLookup);
-        $sheetHelper->start();
+        $sheetHelper->start($cols);
         $this->sheetHelpers[$sheet->getId()] = $sheetHelper;
     }
     
-    public function writeRow(Sheet $sheet, $row)
+    public function writeRow($sheetId, array $row)
     {
-        $this->sheetHelpers[$sheet->getId()]->writeRow($row);
+        $this->sheetHelpers[$sheetId]->writeRow($row);
     }
     
     public function endSheet(Sheet $sheet)
