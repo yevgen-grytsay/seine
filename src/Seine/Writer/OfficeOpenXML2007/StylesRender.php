@@ -45,7 +45,7 @@ final class StylesRender
     {
         $data = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' . MyWriter::EOL;
-//        $data .= $this->buildNumberFormats($styleSheet->getNumberFormats());
+        $data .= $this->buildNumberFormats($styleSheet->getNumberFormats());
         $data .= $this->buildStyleFonts($styleSheet->getFonts());
         $data .= $this->buildFills($styleSheet->getFills());
         $data .= $this->buildBorders();
@@ -62,18 +62,25 @@ final class StylesRender
      */
     private function buildNumberFormats(\SplObjectStorage $formats)
     {
-        $data = MyWriter::EOL .'    <numFmts count="' . $formats->count() . '">' . MyWriter::EOL;
+        $doc = new \DOMDocument();
+        $doc->formatOutput = true;
+
+        $container = $doc->createElement('numFmts');
+        $container->setAttribute('count', $formats->count());
+        $doc->appendChild($container);
+
         $id = 164;
         /** @var NumberFormat $format */
         foreach ($formats as $format) {
             $formats->offsetSet($format, $id);
-            $code = htmlentities($format->getFormatCode());
-            $data .= sprintf('        <numFmt numFmtId="%d" formatCode="%s"/>', $id, $code) . MyWriter::EOL;
+            $fmt = $doc->createElement('numFmt');
+            $container->appendChild($fmt);
+            $fmt->setAttribute('numFmtId', $id);
+            $fmt->setAttribute('formatCode', $format->getFormatCode());
             ++$id;
         }
-        $data .= '</numFmts>' . MyWriter::EOL;
 
-        return $data;
+        return $doc->saveXML($container);
 //        return '
 //            <numFmts count="5">
 //                <numFmt numFmtId="164" formatCode="&quot;$&quot;#,##0.00"/>

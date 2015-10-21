@@ -11,6 +11,7 @@ namespace Seine\Parser\DOM;
 use Seine\Parser\CellFormatting;
 use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
+use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Parser\DOMStyle\PatternFill;
 use YevgenGrytsay\Ooxml\StyleLookup;
 
@@ -49,7 +50,7 @@ class DOMStylesheet
 //		$this->colors = new \SplObjectStorage();
 //		$this->formats = new \SplObjectStorage();
 //		$this->fonts = new \SplObjectStorage();
-//		$this->numberFormats = new \SplObjectStorage();
+		$this->numberFormats = new \SplObjectStorage();
 
 		$this->fills = new \SplObjectStorage();
 		$this->fills->attach(new PatternFill(PatternFill::PATTERN_NONE), $this->fills->count());
@@ -79,11 +80,22 @@ class DOMStylesheet
 			} else if ($key === 'fill') {
 				$fill = $this->createFill($value);
 				$style->setFill($fill);
+			} else if ($key === 'numberFormat') {
+				$format = $this->createNumberFormat($value);
+				$style->setNumberFormat($format);
 			}
 		}
 		$this->styles[] = $style;
 
 		return count($this->styles) - 1;
+	}
+
+	private function createNumberFormat(array $config = array())
+	{
+		$format = NumberFormat::createFromConfig($config);
+		$this->numberFormats->attach($format, $this->numberFormats->count());
+
+		return $format;
 	}
 
 	private function createFont(array $config = array())
@@ -127,7 +139,7 @@ class DOMStylesheet
 	}
 
 	/**
-	 * @return array
+	 * @return \SplObjectStorage
 	 */
 	public function getNumberFormats()
 	{

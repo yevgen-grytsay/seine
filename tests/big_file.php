@@ -52,6 +52,7 @@ $defaultStyleConfig = array(
     ),
     'numberFormat' => array(
         'formatCode' => '[$₩-412]#,##0.00'
+//        'formatCode' => '##0.00'
     )
 );
 

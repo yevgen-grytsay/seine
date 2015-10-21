@@ -77,7 +77,7 @@ final class SheetHelper
         $out = '        <row r="' . $rowId . '">' . MyWriter::EOL;
         /**
          * @var  $colIndex
-         * @var Cell $cell
+         * @var \YevgenGrytsay\Ooxml\Sheet\Cell $cell
          */
         foreach($row as $colIndex => $cell) {
             $value = $cell->getValue();
