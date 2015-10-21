@@ -33,12 +33,12 @@ interface Sheet
     public function setBook(Book $book);
 
     /**
-     * Add a row to the sheet
+     * Add a row to the sheet and advance row index.
      *
      * @param Row|array $row
      * @return Sheet
      */
-    public function addRow($row);
+    public function appendRow($row);
 
     /**
      * Get the visible name of the sheet

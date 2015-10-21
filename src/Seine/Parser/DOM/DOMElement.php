@@ -29,11 +29,11 @@ use Seine\Element;
 abstract class DOMElement implements Element
 {
     /**
-     * @var Factory
+     * @var DOMFactory
      */
     protected $factory;
     
-    public function __construct(Factory $factory)
+    public function __construct(DOMFactory $factory)
     {
         $this->factory = $factory;
     }

@@ -32,9 +32,11 @@ final class DOMArrayRow extends DOMElement implements Row
     private $cells = array();
     
     /**
-     * @var Style
+     * Type is not important.
+     *
+     * @var mixed
      */
-    private $style;
+    private $styleReference;
     
     public function __construct(Factory $factory, array $cells)
     {
@@ -59,7 +61,7 @@ final class DOMArrayRow extends DOMElement implements Row
 
     public function getStyle()
     {
-        return $this->style;
+        return $this->styleReference;
     }
 
     /**
@@ -69,7 +71,7 @@ final class DOMArrayRow extends DOMElement implements Row
      */
     public function setStyle(CellFormatting $style)
     {
-        $this->style = $style;
+        $this->styleReference = $style;
 
         return $this;
     }

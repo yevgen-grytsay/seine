@@ -10,45 +10,87 @@ require_once __DIR__.'/../vendor/autoload.php';
 function generator($rows, $cols)
 {
     $faker = \Faker\Factory::create();
-    foreach (range(1, $rows) as $i) {
-        $row = [];
+    $array = new \SplFixedArray($rows);
+    foreach (range(0, $rows - 1) as $i) {
+        $row = array();
         foreach (range(0, $cols - 1) as $j) {
 //            $row[$j] = $faker->text(15);
-            $row[$j] = $faker->randomFloat();
+            $value = $faker->randomFloat();
+            $cell = new \YevgenGrytsay\Ooxml\Sheet\Cell($value);
+            $row[$j] = $cell;
         }
-        yield $row;
+        $array->offsetSet($i, $row);
     }
+
+    return $array;
 }
 
 $fp = fopen('example.xlsx', 'w');
 $configuration = new \Seine\Configuration();
 $configuration->setOption(\Seine\Configuration::OPT_WRITER, 'OfficeOpenXML2007StreamWriter');
 $factory = new \Seine\Parser\DOM\DOMFactory();
-$book = $factory->getConfiguredBook($fp, $configuration);
-$sheet = $book->newSheet();
+$book = new \Seine\Parser\DOM\DOMBook($factory);
+$book->setWriter(new \Seine\Writer\OfficeOpenXML2007StreamWriter($book, $fp, new \Seine\ZipArchiveCompressor()));
+
 
 /**
  * Style
  */
 $styles = $book->getDefaultStyleSheet();
-$formatting = $styles->newFormatting();
-$colorFill = $styles->newColor()->setRgb('F2DEDE');
-$colorFont = $styles->newColor()->setRgb('FF0000');
-$font = $styles->newFont()->setColor($colorFont);
-$fill = $styles->newPatternFill()
-    ->setPatternType(PatternFill::PATTERN_SOLID)
-    ->setBgColor($colorFill)
-    ->setFgColor($colorFill);
-$numberFormat = $styles->newNumberFormat('[$₩-412]#,##0.00');
-$formatting->setFont($font)->setFill($fill)->setNumberFormat($numberFormat);
 
-foreach (generator(6000, 25) as $cells) {
-    $row = $factory->getRow($cells);
 
-    if (mt_rand(1, 9) % 3 === 0) {
-        $row->setStyle($formatting);
-    }
-    $sheet->addRow($row);
+$defaultStyleConfig = array(
+    //'color' => 'F2DEDE',
+    'font' => array(
+        'size'  => 12,
+        'name'  => 'Arial',
+        'color' => '000000'
+    ),
+    'fill' => array(
+        'patternType' => PatternFill::PATTERN_SOLID,
+        'bgColor'     => '464646',
+        'fgColor'     => 'ededed'
+    ),
+    'numberFormat' => array(
+        'formatCode' => '[$₩-412]#,##0.00'
+    )
+);
+
+$emphasizeStyleConfig = array_merge_recursive($defaultStyleConfig, array(
+    'font' => array(
+        'color' => 'ff0000'
+    ),
+    'fill' => array(
+        'patternType' => PatternFill::PATTERN_SOLID,
+        'bgColor'     => '000000',
+        'fgColor'     => '000000'
+    )
+));
+
+//$defaultStyle = $book->defineStyle($defaultStyleConfig);
+//$emphasizeStyle = $book->defineStyle($defaultStyleConfig);
+
+//$formatting = $styles->newFormatting();
+//$colorFill = $styles->newColor()->setRgb('F2DEDE');
+//$colorFont = $styles->newColor()->setRgb('FF0000');
+//$font = $styles->newFont()->setColor($colorFont);
+//$fill = $styles->newPatternFill()
+//    ->setPatternType(PatternFill::PATTERN_SOLID)
+//    ->setBgColor($colorFill)
+//    ->setFgColor($colorFill);
+//$numberFormat = $styles->newNumberFormat('[$₩-412]#,##0.00');
+//$formatting->setFont($font)->setFill($fill)->setNumberFormat($numberFormat);
+//
+//$defaultFormatting = $styles->newFormatting();
+
+$sheet = $book->getDefaultSheet();
+foreach (generator(2, 25) as $cells) {
+//    $style = $defaultStyle;
+//    if (mt_rand(1, 9) % 3 === 0) {
+//        $style = $emphasizeStyle;
+//    }
+
+    $sheet->appendRow($cells);
 }
 
 $book->close();

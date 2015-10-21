@@ -58,6 +58,16 @@ class DOMStylesheet
         $this->newFormatting();
 	}
 
+	public function defineStyle(array $config = array())
+	{
+
+	}
+//
+////	public function defineFromTemplate(StyleDefinition $template, array $config)
+////	{
+////
+////	}
+
 	/**
      * @return PatternFill
 	 */

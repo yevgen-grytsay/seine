@@ -31,6 +31,7 @@ use Seine\Writer\OfficeOpenXML2007\SharedStringsHelper;
 use Seine\Writer\OfficeOpenXML2007\SheetHelper;
 use Seine\Writer\OfficeOpenXML2007\StylesRender;
 use Seine\Writer\OfficeOpenXML2007\WriterBase;
+use YevgenGrytsay\Ooxml\StyleLookup;
 
 /**
  * @link http://www.ecma-international.org/publications/standards/Ecma-376.htm
@@ -91,14 +92,18 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     {
         $filename = $this->sheetDir . DIRECTORY_SEPARATOR . 'sheet' . $sheet->getId() . '.xml';
         $this->createEmptyWorkingFile($filename);
-        $sheetHelper = new SheetHelper($sheet, $this->sharedStrings, $filename);
+
+
+        $lookup = new StyleLookup(array());
+
+        $sheetHelper = new SheetHelper($sheet, $this->sharedStrings, $filename, $lookup);
         $sheetHelper->start();
         $this->sheetHelpers[$sheet->getId()] = $sheetHelper;
     }
     
-    public function writeRow(Sheet $sheet, Row $row)
+    public function writeRow(Sheet $sheet, $row)
     {
-        $this->sheetHelpers[$sheet->getId()]->writeRow($this->book, $sheet, $row);
+        $this->sheetHelpers[$sheet->getId()]->writeRow($row);
     }
     
     public function endSheet(Sheet $sheet)

@@ -44,12 +44,9 @@ interface Book
     public function getSheets();
 
     /**
-     * Create and add a new Sheet on the Book.
-     *
-     * @param string $name
      * @return Sheet
      */
-    public function newSheet($name = null);
+    public function getDefaultSheet();
 
 	/**
 	 * @return DOMStylesheet[]

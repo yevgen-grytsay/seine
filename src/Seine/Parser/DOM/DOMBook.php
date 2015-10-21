@@ -24,8 +24,6 @@ namespace Seine\Parser\DOM;
 
 use Seine\Book;
 use Seine\Factory;
-use Seine\Parser\DOMStyle\Fill;
-use Seine\Parser\DOMStyle\PatternFill;
 use Seine\Sheet;
 use Seine\Writer;
 
@@ -49,9 +47,9 @@ final class DOMBook extends DOMElement implements Book
     /**
      * DOMBook constructor.
      *
-     * @param \Seine\Factory $factory
+     * @param DOMFactory $factory
      */
-    public function __construct(Factory $factory)
+    public function __construct(DOMFactory $factory)
     {
         parent::__construct($factory);
 
@@ -69,20 +67,6 @@ final class DOMBook extends DOMElement implements Book
     public function setWriter(Writer $writer)
     {
         $this->writer = $writer;
-    }
-
-	/**
-	 * {{@inheritdoc}}
-	 */
-    public function newSheet($name = null)
-    {
-        $sheet = $this->factory->getSheet();
-        if($name) {
-            $sheet->setName($name);
-        }
-        $this->addSheet($sheet);
-
-        return $sheet;
     }
 
 	/**
@@ -105,14 +89,23 @@ final class DOMBook extends DOMElement implements Book
         $sheet->setId($this->sheetId++);
         $this->startBook();
         
-        $sheet->setWriter($this->writer);
-        
         return $this->sheets[] = $sheet;
     }
     
     public function getSheets()
     {
         return $this->sheets;
+    }
+
+    /**
+     * @return Sheet
+     */
+    public function getDefaultSheet()
+    {
+        if (!array_key_exists(0, $this->sheets)) {
+            $this->addSheet(new DOMSheet($this->factory, $this->writer));
+        }
+        return $this->sheets[0];
     }
     
     private function startBook()
@@ -140,6 +133,11 @@ final class DOMBook extends DOMElement implements Book
         }
         
         $this->started = false;
+    }
+
+    public function defineStyle(array $config = array())
+    {
+        return $this->styleSheetList[0]->defineStyle($config);
     }
 
 	/**

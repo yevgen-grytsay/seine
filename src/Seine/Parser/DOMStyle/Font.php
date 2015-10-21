@@ -28,6 +28,11 @@ class Font
      */
     private $color;
 
+    public static function createFromConfig(array $config = array())
+    {
+
+    }
+
     /**
      * @return mixed
      */

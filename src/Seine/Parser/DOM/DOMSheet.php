@@ -22,6 +22,7 @@
  */
 namespace Seine\Parser\DOM;
 
+use Seine\Factory;
 use Seine\Sheet;
 use Seine\Row;
 use Seine\Writer;
@@ -39,6 +40,18 @@ final class DOMSheet extends DOMElement implements Sheet
     private $started = false;
 
     private $id;
+
+    /**
+     * DOMSheet constructor.
+     *
+     * @param DOMFactory $factory
+     * @param \Seine\Writer  $writer
+     */
+    public function __construct(DOMFactory $factory, Writer $writer)
+    {
+        parent::__construct($factory);
+        $this->writer = $writer;
+    }
 
     /**
      * @var Book
@@ -68,11 +81,10 @@ final class DOMSheet extends DOMElement implements Sheet
         $this->book = $book;
     }
 
-    public function addRow($data)
+    public function appendRow($data)
     {
-        $row = ($data instanceof Row ? $data : $this->factory->getRow($data));
         $this->startSheet();
-        $this->writer->writeRow($this, $row);
+        $this->writer->writeRow($this, $data);
     }
 
     public function setName($name)
@@ -83,11 +95,6 @@ final class DOMSheet extends DOMElement implements Sheet
     public function getName()
     {
         return $this->name;
-    }
-
-    public function setWriter(Writer $writer)
-    {
-        $this->writer = $writer;
     }
 
     private function startSheet()

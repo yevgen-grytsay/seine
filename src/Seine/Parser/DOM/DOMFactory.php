@@ -32,7 +32,7 @@ use Seine\Book;
  * Base of operation when creating spreadsheets.
  * @author Martin Vium
  */
-final class DOMFactory implements Factory 
+final class DOMFactory
 {
     /**
      * @var Configuration

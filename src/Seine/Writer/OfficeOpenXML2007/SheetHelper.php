@@ -22,13 +22,13 @@
  */
 namespace Seine\Writer\OfficeOpenXML2007;
 
+use Ooxml\Sheet\Cell;
 use Seine\Book;
-use Seine\Parser\DOM\DOMCell;
-use Seine\Row;
-use Seine\Sheet;
-use Seine\Style;
-use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
 use Seine\IOException;
+use Seine\Parser\DOM\DOMCell;
+use Seine\Sheet;
+use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
+use YevgenGrytsay\Ooxml\StyleLookup;
 
 final class SheetHelper
 {
@@ -45,12 +45,17 @@ final class SheetHelper
     private $filename;
     private $stream;
     private $rowId = 0;
+    /**
+     * @var StyleLookup
+     */
+    private $styleLookup;
 
-    public function __construct(Sheet $sheet, SharedStringsHelper $sharedStrings, $filename)
+    public function __construct(Sheet $sheet, SharedStringsHelper $sharedStrings, $filename, StyleLookup $styleLookup)
     {
         $this->sheet = $sheet;
         $this->sharedStrings = $sharedStrings;
         $this->filename = $filename;
+        $this->styleLookup = $styleLookup;
     }
 
     public function start()
@@ -65,28 +70,18 @@ final class SheetHelper
         fwrite($this->stream, '    <sheetData>' . MyWriter::EOL);
     }
 
-    public function writeRow(Book $book, Sheet $sheet, Row $row)
+    public function writeRow($row)
     {
-        $styleId = 0;
-        $formats = $book->getDefaultStyleSheet()->getFormats();
-        $style = $row->getStyle();
-        if ($style && $formats->contains($style)) {
-            $styleId = $formats->offsetGet($style);
-        }
-
         $columnId = 'A';
         $rowId = ++$this->rowId;
         $out = '        <row r="' . $rowId . '">' . MyWriter::EOL;
-        foreach($row->getCells() as $cell) {
-            $value = $cell;
-            $cellStyleId = $styleId;
-            if ($cell instanceof DOMCell) {
-                $value = $cell->getValue();
-                $formatting = $cell->getFormatting();
-                if ($formatting && $formats->contains($formatting)) {
-                    $cellStyleId = $formats->offsetGet($formatting);
-                }
-            }
+        /**
+         * @var  $colIndex
+         * @var Cell $cell
+         */
+        foreach($row as $colIndex => $cell) {
+            $value = $cell->getValue();
+            $cellStyleId = $this->getStyleId($cell->getStyleReference());
 
             $out .= '            <c r="' . $columnId . $rowId . '"';
             $out .= ' s="' . $cellStyleId . '"';
@@ -104,6 +99,16 @@ final class SheetHelper
         }
 
         fwrite($this->stream, $out . '        </row>' . MyWriter::EOL);
+    }
+
+    protected function getStyleId($styleReference)
+    {
+        $styleId = 0;
+        if ($this->styleLookup->hasStyle($styleReference)) {
+            $styleId = $this->styleLookup->getStyleIdByReference($styleReference);
+        }
+
+        return $styleId;
     }
 
     public function end()
