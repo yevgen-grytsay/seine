@@ -40,6 +40,11 @@ class StyleLookup
         return $reference;
     }
 
+    /**
+     * @param $reference
+     *
+     * @return bool
+     */
     public function hasStyle($reference)
     {
         return $this->styleMap->offsetExists($reference);

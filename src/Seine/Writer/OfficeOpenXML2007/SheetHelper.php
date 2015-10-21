@@ -22,12 +22,10 @@
  */
 namespace Seine\Writer\OfficeOpenXML2007;
 
-use Ooxml\Sheet\Cell;
-use Seine\Book;
 use Seine\IOException;
-use Seine\Parser\DOM\DOMCell;
 use Seine\Sheet;
 use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
+use YevgenGrytsay\Ooxml\Sheet\Cell;
 use YevgenGrytsay\Ooxml\StyleLookup;
 
 final class SheetHelper
@@ -77,7 +75,7 @@ final class SheetHelper
         $out = '        <row r="' . $rowId . '">' . MyWriter::EOL;
         /**
          * @var  $colIndex
-         * @var \YevgenGrytsay\Ooxml\Sheet\Cell $cell
+         * @var Cell $cell
          */
         foreach($row as $colIndex => $cell) {
             $value = $cell->getValue();
@@ -92,7 +90,7 @@ final class SheetHelper
                     $out .= '/>' . MyWriter::EOL;
                 } else {
                     $sharedStringId = $this->sharedStrings->writeString($value);
-                    $out .= ' t="s"><v>' . $sharedStringId . '</v></c>' . MyWriter::EOL;
+                    $out .= ' t="'. Cell::TYPE_SHARED_STRING .'"><v>' . $sharedStringId . '</v></c>' . MyWriter::EOL;
                 }
             }
             $columnId++;
