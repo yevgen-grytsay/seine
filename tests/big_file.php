@@ -50,7 +50,8 @@ $defaultStyleConfig = array(
     //'color' => 'F2DEDE',
     'font' => array(
         Font::CONFIG_SIZE  => 12,
-        Font::CONFIG_COLOR => '000000'
+        Font::CONFIG_COLOR => '000000',
+        Font::CONFIG_BOLD => true
     ),
     'fill' => array(
         'patternType' => PatternFill::PATTERN_SOLID,

@@ -22,6 +22,7 @@ class Font
 
     const CONFIG_COLOR = 'color';
     const CONFIG_SIZE = 'size';
+    const CONFIG_BOLD = 'bold';
 
     private $family;
     private $size;
@@ -49,7 +50,8 @@ class Font
         $resolver = new OptionsResolver();
         $resolver->setDefaults(array(
             self::CONFIG_COLOR => null,
-            self::CONFIG_SIZE => 24
+            self::CONFIG_SIZE => 24,
+            self::CONFIG_BOLD => false
         ));
         $config = $resolver->resolve($config);
 
@@ -60,6 +62,10 @@ class Font
 
         if ($config[self::CONFIG_SIZE]) {
             $font->setSize($config[self::CONFIG_SIZE]);
+        }
+
+        if ($config[self::CONFIG_BOLD]) {
+            $font->setBold($config[self::CONFIG_BOLD]);
         }
 
         return $font;

@@ -74,15 +74,21 @@ class DOMStylesheet
 	{
 		$style = new CellFormatting();
 		foreach ($config as $key => $value) {
-			if ($key === 'font') {
-				$font = $this->createFont($value);
-				$style->setFont($font);
-			} else if ($key === 'fill') {
-				$fill = $this->createFill($value);
-				$style->setFill($fill);
-			} else if ($key === 'numberFormat') {
-				$format = $this->createNumberFormat($value);
-				$style->setNumberFormat($format);
+			switch($key) {
+				case CellFormatting::CONFIG_FONT:
+					$font = $this->createFont($value);
+					$style->setFont($font);
+					break;
+
+				case CellFormatting::CONFIG_FILL:
+					$fill = $this->createFill($value);
+					$style->setFill($fill);
+					break;
+
+				case CellFormatting::CONFIG_NUMBER_FORMAT:
+					$format = $this->createNumberFormat($value);
+					$style->setNumberFormat($format);
+					break;
 			}
 		}
 		$this->styles[] = $style;

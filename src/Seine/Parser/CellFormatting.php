@@ -15,7 +15,11 @@ use Seine\Style;
 
 class CellFormatting
 {
-    /**
+    const CONFIG_FONT = 'font';
+	const CONFIG_FILL = 'fill';
+	const CONFIG_NUMBER_FORMAT = 'numberFormat';
+
+	/**
      * @var Fill
      */
     private $fill;
