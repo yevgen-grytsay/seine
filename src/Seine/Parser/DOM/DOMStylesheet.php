@@ -9,6 +9,7 @@
 namespace Seine\Parser\DOM;
 
 use Seine\Parser\CellFormatting;
+use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\PatternFill;
 use YevgenGrytsay\Ooxml\StyleLookup;
@@ -50,9 +51,9 @@ class DOMStylesheet
 //		$this->fonts = new \SplObjectStorage();
 //		$this->numberFormats = new \SplObjectStorage();
 
-		$this->fills = array();
-		$this->fills[] = new PatternFill(PatternFill::PATTERN_NONE);
-		$this->fills[] = new PatternFill(PatternFill::PATTERN_GRAY_125);
+		$this->fills = new \SplObjectStorage();
+		$this->fills->attach(new PatternFill(PatternFill::PATTERN_NONE), $this->fills->count());
+		$this->fills->attach(new PatternFill(PatternFill::PATTERN_GRAY_125), $this->fills->count());
 
 		$this->fonts = new \SplObjectStorage();
 		$this->fonts->attach(new Font(), $this->fonts->count());
@@ -75,6 +76,9 @@ class DOMStylesheet
 			if ($key === 'font') {
 				$font = $this->createFont($value);
 				$style->setFont($font);
+			} else if ($key === 'fill') {
+				$fill = $this->createFill($value);
+				$style->setFill($fill);
 			}
 		}
 		$this->styles[] = $style;
@@ -90,8 +94,16 @@ class DOMStylesheet
 		return $font;
 	}
 
+	private function createFill(array $config = array())
+	{
+		$fill = Fill::createFromConfig($config);
+		$this->fills->attach($fill, $this->fills->count());
+
+		return $fill;
+	}
+
 	/**
-	 * @return Font[]
+	 * @return \SplObjectStorage
 	 */
 	public function getFonts()
 	{
@@ -107,7 +119,7 @@ class DOMStylesheet
 	}
 
 	/**
-	 * @return array
+	 * @return \SplObjectStorage
 	 */
 	public function getFills()
 	{

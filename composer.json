@@ -31,7 +31,8 @@
   ],
   "require": {
     "ext-zip": "*",
-    "php": ">=5.3.0"
+    "php": ">=5.3.0",
+    "symfony/options-resolver": "~2.7"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.5"

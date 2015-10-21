@@ -47,7 +47,7 @@ final class StylesRender
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' . MyWriter::EOL;
 //        $data .= $this->buildNumberFormats($styleSheet->getNumberFormats());
         $data .= $this->buildStyleFonts($styleSheet->getFonts());
-//        $data .= $this->buildFills($styleSheet->getFills());
+        $data .= $this->buildFills($styleSheet->getFills());
         $data .= $this->buildBorders();
         $data .= $this->buildCellStyles();
         $data .= $this->buildCellXfs($styleSheet);

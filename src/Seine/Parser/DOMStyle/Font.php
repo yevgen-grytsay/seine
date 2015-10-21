@@ -42,7 +42,7 @@ class Font
     public static function createFromConfig(array $config = array())
     {
         $font = new static();
-        $font->setColor(new Color('dedede'));
+        $font->setColor(new Color('ff0000'));
 
         return $font;
     }
