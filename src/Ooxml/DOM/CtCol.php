@@ -66,6 +66,11 @@ class CtCol extends DOMElement
             self::ATTR_CUSTOM_WIDTH => false
         );
     }
+
+    protected function name()
+    {
+        return 'col';
+    }
 }
 /**
  * "ECMA-376, Fourth Edition, Part 1 - Fundamentals And Markup Language Reference"

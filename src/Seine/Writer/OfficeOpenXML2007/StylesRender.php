@@ -207,30 +207,46 @@ final class StylesRender
 
     private function buildCellXfs(DOMStylesheet $styleSheet)
     {
+        $doc = new \DOMDocument();
+        $doc->formatOutput = true;
+
         /**
          * @var CellFormatting $format
          */
 		$formatList = $styleSheet->getStyles();
         $i = 0;
-        $data = '    <cellXfs count="' . count($formatList) . '">' . MyWriter::EOL;
+        $cellXfRootEl = $doc->createElement('cellXfs');
+        $doc->appendChild($cellXfRootEl);
+        $cellXfRootEl->setAttribute('count', count($formatList));
         foreach($formatList as $format) {
-
-            //TODO: delegate to render
             $fillId = $this->getFillIdForStyle($styleSheet, $format);
 			$fontId = $this->getFontIdForStyle($styleSheet, $format);
             $numberFormatId = $this->getNumberFormatIdForStyle($styleSheet, $format);
+            $align = $format->getAlign();
 
-            $numberFormatStr = '';
+            $xfEl = $doc->createElement('xf');
+            $cellXfRootEl->appendChild($xfEl);
+
             if ($numberFormatId) {
-                $numberFormatStr = sprintf('numFmtId="%d" applyNumberFormat="1"', $numberFormatId);
+                $xfEl->setAttribute('numFmtId', $numberFormatId);
+                $xfEl->setAttribute('applyNumberFormat', '1');
             }
 
-            $data .= '        <xf fontId="'. $fontId .'" fillId="'. $fillId .'" borderId="0" xfId="0" '. $numberFormatStr .' />' . MyWriter::EOL;
+            $xfEl->setAttribute('fontId', $fontId);
+            $xfEl->setAttribute('fillId', $fillId);
+            $xfEl->setAttribute('borderId', 0);
+            $xfEl->setAttribute('xfId', 0);
+
+            if ($align) {
+                $alignEl = $align->render($doc);
+                $xfEl->appendChild($alignEl);
+            }
+
             $i++;
         }
-        $data .= '    </cellXfs>' . MyWriter::EOL;
+        $xml = $doc->saveXML($cellXfRootEl);
 
-        return $data;
+        return $xml;
     }
 
     private function getFillIdForStyle(DOMStylesheet $styleSheet, CellFormatting $style)

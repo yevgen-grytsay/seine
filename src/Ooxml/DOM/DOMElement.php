@@ -30,7 +30,7 @@ abstract class DOMElement
     {
         $this->resolver = $resolver = new OptionsResolver();
         try {
-//            $resolver->setDefined($this->getDefined());
+            $resolver->setDefined($this->getDefined());
             $resolver->setRequired($this->required());
             $resolver->setDefaults($this->defaults());
             $this->attributes = $resolver->resolve($config);
@@ -44,10 +44,12 @@ abstract class DOMElement
      */
     protected function getDefined()
     {
-        $required = $this->required;
-        $defaults = array_keys($this->defaults);
-        $map = array_fill_keys($required + $defaults, null);
-        $keys = array_flip($map);
+        $required = $this->required();
+        $optional = $this->optional();
+        $defaults = array_keys($this->defaults());
+        $all = array_merge($required, $optional, $defaults);
+        $map = array_fill_keys($all, null);
+        $keys = array_keys($map);
 
         return $keys;
     }
@@ -75,7 +77,7 @@ abstract class DOMElement
     public function render(\DOMDocument $doc)
     {
         $definedOptions = $this->resolver->getDefinedOptions();
-        $el = $doc->createElement('col');
+        $el = $doc->createElement($this->name());
         foreach ($definedOptions as $name) {
             $el->setAttribute($name, $this->getAttribute($name));
         }
@@ -83,12 +85,29 @@ abstract class DOMElement
         return $el;
     }
 
+    abstract protected function name();
+
     /**
      * @return array
      */
-    abstract protected function required();
+    protected function required()
+    {
+        return array();
+    }
+
     /**
      * @return array
      */
-    abstract protected function defaults();
+    protected function defaults()
+    {
+        return array();
+    }
+
+    /**
+     * @return array
+     */
+    protected function optional()
+    {
+        return array();
+    }
 }

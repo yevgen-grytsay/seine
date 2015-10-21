@@ -3,10 +3,12 @@
  * @author: Yevgen Grytsay hrytsai@mti.ua
  * @date  : 16.10.15
  */
+use Seine\Parser\CellFormatting;
 use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Parser\DOMStyle\PatternFill;
+use YevgenGrytsay\Ooxml\DOM\CtCellAlignment;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -73,6 +75,9 @@ $emphasizeStyleConfig = array(
         Fill::CONFIG_PATTERN_TYPE => PatternFill::PATTERN_SOLID,
         Fill::CONFIG_BACK_COLOR     => '000000',
         Fill::CONFIG_FORE_COLOR     => '000000'
+    ),
+    CellFormatting::CONFIG_ALIGNMENT => array(
+        CtCellAlignment::ATTR_HORIZONTAL => CtCellAlignment::HOR_CENTER
     )
 );
 

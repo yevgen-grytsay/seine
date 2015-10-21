@@ -13,6 +13,7 @@ use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Parser\DOMStyle\PatternFill;
+use YevgenGrytsay\Ooxml\DOM\CtCellAlignment;
 use YevgenGrytsay\Ooxml\StyleLookup;
 
 class DOMStylesheet
@@ -89,11 +90,23 @@ class DOMStylesheet
 					$format = $this->createNumberFormat($value);
 					$style->setNumberFormat($format);
 					break;
+
+				case CellFormatting::CONFIG_ALIGNMENT:
+					$align = $this->createAlignment($value);
+					$style->setAlign($align);
+					break;
 			}
 		}
 		$this->styles[] = $style;
 
 		return count($this->styles) - 1;
+	}
+
+	private function createAlignment(array $config = array())
+	{
+		$align = new CtCellAlignment($config);
+
+		return $align;
 	}
 
 	private function createNumberFormat(array $config = array())

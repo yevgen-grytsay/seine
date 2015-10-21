@@ -12,12 +12,14 @@ use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Style;
+use YevgenGrytsay\Ooxml\DOM\CtCellAlignment;
 
 class CellFormatting
 {
     const CONFIG_FONT = 'font';
 	const CONFIG_FILL = 'fill';
 	const CONFIG_NUMBER_FORMAT = 'numberFormat';
+	const CONFIG_ALIGNMENT = 'alignment';
 
 	/**
      * @var Fill
@@ -32,6 +34,10 @@ class CellFormatting
 	 * @var NumberFormat
 	 */
 	private $numberFormat;
+	/**
+	 * @var CtCellAlignment
+	 */
+	private $align;
 
 	/**
      * @return Fill
@@ -88,4 +94,21 @@ class CellFormatting
 	{
 		$this->numberFormat = $numberFormat;
 	}
+
+	/**
+	 * @return CtCellAlignment
+	 */
+	public function getAlign()
+	{
+		return $this->align;
+	}
+
+	/**
+	 * @param CtCellAlignment $align
+	 */
+	public function setAlign(CtCellAlignment $align)
+	{
+		$this->align = $align;
+	}
+
 }
