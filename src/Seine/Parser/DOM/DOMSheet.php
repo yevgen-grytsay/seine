@@ -28,7 +28,7 @@ use Seine\Writer\OfficeOpenXML2007\WriterBase;
 use YevgenGrytsay\Ooxml\DOM\CtCol;
 use YevgenGrytsay\Ooxml\StyleLookup;
 
-final class DOMSheet extends DOMElement implements Sheet
+final class DOMSheet extends DOMElement
 {
     /**
      * @var WriterBase

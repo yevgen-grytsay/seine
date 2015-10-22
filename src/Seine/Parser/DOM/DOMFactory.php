@@ -85,27 +85,7 @@ final class DOMFactory
     {
         return new DOMBook($this);
     }
-    
-    /**
-     * Get a new row object.
-     *
-     * @param array $cells
-     * @return DOMArrayRow
-     */
-    public function getRow(array $cells)
-    {
-        return new DOMArrayRow($this, $cells);
-    }
-    
-    /**
-     * @internal
-     * @return DOMSheet 
-     */
-    public function getSheet()
-    {
-        return new DOMSheet($this);
-    }
-    
+
     /**
      * Get a Book already configured with a writer and options from the default configuration
      * or the $config param if passed in.

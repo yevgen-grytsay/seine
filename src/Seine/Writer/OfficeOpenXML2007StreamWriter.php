@@ -25,6 +25,8 @@ namespace Seine\Writer;
 use Seine\Book;
 use Seine\Compressor;
 use Seine\Configuration;
+use Seine\Parser\DOM\DOMBook;
+use Seine\Parser\DOM\DOMSheet;
 use Seine\Row;
 use Seine\Sheet;
 use Seine\Writer\OfficeOpenXML2007\SharedStringsHelper;
@@ -59,11 +61,11 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     private $book;
 
     /**
-     * @param \Seine\Book $book
-     * @param resource $stream
-     * @param \Seine\Compressor $compressor
+     * @param \Seine\Book|\Seine\Parser\DOM\DOMBook $book
+     * @param resource                              $stream
+     * @param \Seine\Compressor                     $compressor
      */
-    public function __construct(Book $book, $stream, Compressor $compressor)
+    public function __construct(DOMBook $book, $stream, Compressor $compressor)
     {
         $this->book = $book;
         parent::__construct($stream, $compressor);
@@ -74,7 +76,7 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
         $this->setTempDir($config->getOption(self::OPT_TEMP_DIR, $this->tempDir));
     }
 
-    public function startBook(Book $book)
+    public function startBook(DOMBook $book)
     {
         $this->createBaseStructure();
         $this->startSharedStrings();
@@ -88,7 +90,7 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
         $this->sharedStrings->start();
     }
     
-    public function startSheet(Sheet $sheet, StyleLookup $styleLookup, array $cols)
+    public function startSheet(DOMSheet $sheet, StyleLookup $styleLookup, array $cols)
     {
         $filename = $this->sheetDir . DIRECTORY_SEPARATOR . 'sheet' . $sheet->getId() . '.xml';
         $this->createEmptyWorkingFile($filename);
@@ -103,7 +105,7 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
         $this->sheetHelpers[$sheetId]->writeRow($row, $config);
     }
     
-    public function endSheet(Sheet $sheet)
+    public function endSheet(DOMSheet $sheet)
     {
         $this->sheetHelpers[$sheet->getId()]->end();
     }
@@ -186,13 +188,12 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
     }
 
     /**
-     * @param \Seine\Book $book
+     * @param \Seine\Book|\Seine\Parser\DOM\DOMBook $book
      *
      * @throws \Seine\IOException
      * @internal param \Seine\Style[]|\SplObjectStorage $styles
-     *
      */
-    private function createStylesFile(Book $book)
+    private function createStylesFile(DOMBook $book)
     {
         $stylesHelper = new StylesRender();
         $filename = $this->dataDir . DIRECTORY_SEPARATOR . 'styles.xml';

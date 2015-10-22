@@ -22,18 +22,15 @@
  */
 namespace Seine\Parser\DOM;
 
-use Seine\Book;
-use Seine\Factory;
-use Seine\Sheet;
 use Seine\Writer;
 
-final class DOMBook extends DOMElement implements Book
+final class DOMBook extends DOMElement
 {
     private $sheetId = 1;
     private $sheets = array();
     
     /**
-     * @var Writer
+     * @var Writer\OfficeOpenXML2007\WriterBase
      */
     private $writer;
    
@@ -83,7 +80,7 @@ final class DOMBook extends DOMElement implements Book
 		return $sheet;
 	}
     
-    public function addSheet(Sheet $sheet)
+    public function addSheet(DOMSheet $sheet)
     {
         $sheet->setId($this->sheetId++);
         $this->startBook();
@@ -107,17 +104,6 @@ final class DOMBook extends DOMElement implements Book
         return $sheet;
     }
 
-    /**
-     * @return Sheet
-     */
-//    public function getDefaultSheet()
-//    {
-//        if (!array_key_exists(0, $this->sheets)) {
-//            $this->addSheet(new DOMSheet($this->factory, $this->writer, $this->getDefaultStyleSheet()->getLookup()));
-//        }
-//        return $this->sheets[0];
-//    }
-    
     private function startBook()
     {
         if(! $this->writer) {

@@ -23,6 +23,7 @@
 namespace Seine\Writer\OfficeOpenXML2007;
 
 use Seine\IOException;
+use Seine\Parser\DOM\DOMSheet;
 use Seine\Sheet;
 use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
 use YevgenGrytsay\Ooxml\DOM\CtCol;
@@ -49,7 +50,7 @@ final class SheetHelper
      */
     private $styleLookup;
 
-    public function __construct(Sheet $sheet, SharedStringsHelper $sharedStrings, $filename, StyleLookup $styleLookup)
+    public function __construct(DOMSheet $sheet, SharedStringsHelper $sharedStrings, $filename, StyleLookup $styleLookup)
     {
         $this->sheet = $sheet;
         $this->sharedStrings = $sharedStrings;

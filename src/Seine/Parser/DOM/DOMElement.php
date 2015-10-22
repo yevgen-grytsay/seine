@@ -26,7 +26,7 @@ use Seine\Factory;
 use Seine\Writer;
 use Seine\Element;
 
-abstract class DOMElement implements Element
+abstract class DOMElement
 {
     /**
      * @var DOMFactory
