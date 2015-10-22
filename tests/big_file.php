@@ -81,7 +81,9 @@ $emphasizeStyleConfig = array(
 //        Fill::CONFIG_FORE_COLOR     => '000000'
 //    ),
     CellFormatting::CONFIG_ALIGNMENT => array(
-        CtCellAlignment::ATTR_HORIZONTAL => CtCellAlignment::HOR_CENTER
+        CtCellAlignment::ATTR_HORIZONTAL => CtCellAlignment::HOR_CENTER,
+        CtCellAlignment::ATTR_VERTICAL => CtCellAlignment::VERT_TOP,
+        CtCellAlignment::ATTR_WRAP_TEXT => 'true'
     ),
     CellFormatting::CONFIG_BORDER => array(
         CtBorder::ATTR_OUTLINE        => true,

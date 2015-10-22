@@ -32,15 +32,34 @@ abstract class DOMElement
      */
     public function __construct(array $config = array())
     {
-        $this->resolver = $resolver = new OptionsResolver();
+        $this->createResolver();
+        $this->resolve($config);
+    }
+
+    /**
+     * @param $config
+     * @throws \RuntimeException
+     */
+    protected function resolve($config)
+    {
+        try {
+            $this->attributes = $this->resolver->resolve($config);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Unable to resolve config.', 0, $e);
+        }
+    }
+
+    protected function createResolver()
+    {
+        $resolver = new OptionsResolver();
         try {
             $resolver->setDefined($this->getDefined());
             $resolver->setRequired($this->required());
             $resolver->setDefaults($this->defaults());
-            $this->attributes = $resolver->resolve($config);
         } catch (\Exception $e) {
-            throw new \RuntimeException('Unable to create element "CtCol" from config.', 0, $e);
+            throw new \RuntimeException('Unable to create resolver', 0, $e);
         }
+        $this->resolver = $resolver;
     }
 
     /**

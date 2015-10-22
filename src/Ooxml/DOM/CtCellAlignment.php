@@ -47,6 +47,8 @@ namespace YevgenGrytsay\Ooxml\DOM;
 class CtCellAlignment extends DOMElement
 {
     const ATTR_HORIZONTAL = 'horizontal';
+    const ATTR_VERTICAL = 'vertical';
+    const ATTR_WRAP_TEXT = 'wrapText';
 
     const HOR_GENERAL = 'general';
     const HOR_LEFT = 'left';
@@ -55,18 +57,29 @@ class CtCellAlignment extends DOMElement
     const HOR_FILL = 'fill';
     const HOR_JUSTIFY = 'justify';
 
-    public function __construct(array $config)
+    const VERT_TOP = 'top';
+    const VERT_CENTER = 'center';
+    const VERT_BOTTOM = 'bottom';
+    const VERT_JUSTIFY = 'justify';
+    const VERT_DISTRIBUTED = 'distributed';
+
+     protected function createResolver()
     {
-        parent::__construct($config);
+        parent::createResolver();
         $this->resolver->setAllowedValues(self::ATTR_HORIZONTAL, array(
             self::HOR_GENERAL, self::HOR_LEFT, self::HOR_CENTER,
             self::HOR_RIGHT, self::HOR_FILL, self::HOR_JUSTIFY
         ));
+        $this->resolver->setAllowedValues(self::ATTR_VERTICAL, array(
+            self::VERT_TOP, self::VERT_CENTER, self::VERT_BOTTOM,
+            self::VERT_JUSTIFY, self::VERT_DISTRIBUTED
+        ));
+        $this->resolver->setAllowedValues(self::ATTR_WRAP_TEXT, array('true', 'false'));
     }
 
     protected function optional()
     {
-        return array(self::ATTR_HORIZONTAL);
+        return array(self::ATTR_HORIZONTAL, self::ATTR_VERTICAL, self::ATTR_WRAP_TEXT);
     }
 
 
