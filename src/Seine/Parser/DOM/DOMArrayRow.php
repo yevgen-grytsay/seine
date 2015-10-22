@@ -29,6 +29,8 @@ use Seine\Style;
 
 final class DOMArrayRow extends DOMElement implements Row
 {
+    const ATTR_HEIGHT = 'ht';
+
     private $cells = array();
     
     /**

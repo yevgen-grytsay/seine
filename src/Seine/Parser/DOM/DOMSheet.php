@@ -87,10 +87,10 @@ final class DOMSheet extends DOMElement implements Sheet
         }
     }
 
-    public function appendRow($data)
+    public function appendRow($data, array $config = array())
     {
         $this->startOnce();
-        $this->writer->writeRow($this->getId(), $data);
+        $this->writer->writeRow($this->getId(), $data, $config);
     }
 
     public function setName($name)

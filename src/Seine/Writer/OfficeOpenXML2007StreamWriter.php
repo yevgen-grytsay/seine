@@ -98,9 +98,9 @@ final class OfficeOpenXML2007StreamWriter extends WriterBase
         $this->sheetHelpers[$sheet->getId()] = $sheetHelper;
     }
     
-    public function writeRow($sheetId, array $row)
+    public function writeRow($sheetId, array $row, array $config = array())
     {
-        $this->sheetHelpers[$sheetId]->writeRow($row);
+        $this->sheetHelpers[$sheetId]->writeRow($row, $config);
     }
     
     public function endSheet(Sheet $sheet)

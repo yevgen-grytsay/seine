@@ -32,7 +32,7 @@ interface Writer
      *
      * @return mixed
      */
-    public function writeRow($sheetId, array $row);
+    public function writeRow($sheetId, array $row, array $config = array());
 
     public function startSheet(Sheet $sheet, StyleLookup $styleLookup, array $cols);
 

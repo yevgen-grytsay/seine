@@ -138,13 +138,17 @@ $sheet->setColsConfig(array(
         \YevgenGrytsay\Ooxml\DOM\CtCol::ATTR_WIDTH => 25
     )
 ));
+
+$rowConfig = array(
+    \Seine\Parser\DOM\DOMArrayRow::ATTR_HEIGHT => 60
+);
 foreach (generator(200, 25, $defaultStyle, $emphasizeStyle) as $cells) {
 //    $style = $defaultStyle;
 //    if (mt_rand(1, 9) % 3 === 0) {
 //        $style = $emphasizeStyle;
 //    }
 
-    $sheet->appendRow($cells);
+    $sheet->appendRow($cells, $rowConfig);
 }
 
 $book->close();

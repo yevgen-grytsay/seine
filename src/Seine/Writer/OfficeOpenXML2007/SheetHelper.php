@@ -87,11 +87,24 @@ final class SheetHelper
 
 
 
-    public function writeRow($row)
+    public function writeRow($row, array $config = array())
     {
+        $writer = new \XMLWriter();
+        $writer->openMemory();
+        $writer->setIndent(true);
+//        $writer->openUri('php://output');
+
+        $writer->startDocument('1.0', 'UTF-8');
+
         $columnId = 'A';
         $rowId = ++$this->rowId;
-        $out = '        <row r="' . $rowId . '">' . MyWriter::EOL;
+        $writer->startElement('row');
+        $writer->writeAttribute('r', $rowId);
+
+        foreach ($config as $attr => $val) {
+            $writer->writeAttribute($attr, $val);
+        }
+
         /**
          * @var  $colIndex
          * @var Cell $cell
@@ -100,22 +113,29 @@ final class SheetHelper
             $value = $cell->getValue();
             $cellStyleId = $this->getStyleId($cell->getStyleReference());
 
-            $out .= '            <c r="' . $columnId . $rowId . '"';
-            $out .= ' s="' . $cellStyleId . '"';
-            if(is_numeric($value)) {
-                $out .= '><v>' . $value . '</v></c>' . MyWriter::EOL;
-            } else {
-                if (empty($value)) {
-                    $out .= '/>' . MyWriter::EOL;
-                } else {
-                    $sharedStringId = $this->sharedStrings->writeString($value);
-                    $out .= ' t="'. Cell::TYPE_SHARED_STRING .'"><v>' . $sharedStringId . '</v></c>' . MyWriter::EOL;
-                }
+            $writer->startElement('c');
+            $writer->writeAttribute('r', $columnId . $rowId);
+            $writer->writeAttribute('s', $cellStyleId);
+
+            $cellValue = $value;
+            if (!is_numeric($value) && !empty($value)) {
+                $sharedStringId = $this->sharedStrings->writeString($value);
+                $writer->writeAttribute('t', Cell::TYPE_SHARED_STRING);
+                $cellValue = $sharedStringId;
             }
+
+            $writer->writeElement('v', $cellValue);
+            $writer->endElement();
             $columnId++;
         }
+        $writer->endElement();
 
-        fwrite($this->stream, $out . '        </row>' . MyWriter::EOL);
+        $writer->endDocument();
+        $xml = $writer->outputMemory(true);
+        $pos = strpos($xml, "\n");
+        $xml = substr($xml, $pos + 1);
+
+        fwrite($this->stream, $xml);
     }
 
     protected function getStyleId($styleReference)

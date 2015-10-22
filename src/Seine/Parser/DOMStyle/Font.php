@@ -23,6 +23,7 @@ class Font
     const CONFIG_COLOR = 'color';
     const CONFIG_SIZE = 'size';
     const CONFIG_BOLD = 'bold';
+    const CONFIG_NAME = 'name';
 
     private $family;
     private $size;
@@ -66,6 +67,10 @@ class Font
 
         if ($config[self::CONFIG_BOLD]) {
             $font->setBold($config[self::CONFIG_BOLD]);
+        }
+
+        if ($config[self::CONFIG_NAME]) {
+            $font->setFamily($config[self::CONFIG_NAME]);
         }
 
         return $font;
