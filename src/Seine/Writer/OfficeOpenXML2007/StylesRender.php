@@ -29,6 +29,7 @@ use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Writer\OfficeOpenXML2007StreamWriter as MyWriter;
+use YevgenGrytsay\Ooxml\DOM\CtBorder;
 
 final class StylesRender
 {
@@ -48,7 +49,7 @@ final class StylesRender
         $data .= $this->buildNumberFormats($styleSheet->getNumberFormats());
         $data .= $this->buildStyleFonts($styleSheet->getFonts());
         $data .= $this->buildFills($styleSheet->getFills());
-        $data .= $this->buildBorders();
+        $data .= $this->buildBorders($styleSheet->getBorders());
         $data .= $this->buildCellStyles();
         $data .= $this->buildCellXfs($styleSheet);
         $data .= '</styleSheet>';
@@ -183,17 +184,30 @@ final class StylesRender
         return $xml.'</fills>';*/
     }
 
-    private function buildBorders()
+    private function buildBorders(\SplObjectStorage $borderList)
     {
-        return '    <borders count="1">
-        <border>
-            <left/>
-            <right/>
-            <top/>
-            <bottom/>
-            <diagonal/>
-        </border>
-    </borders>';
+        $doc = new \DOMDocument();
+        $doc->formatOutput = true;
+
+        $rootEl = $doc->createElement('borders');
+        $rootEl->setAttribute('count', $borderList->count());
+
+        /** @var CtBorder $border */
+        foreach ($borderList as $border) {
+            $rootEl->appendChild($border->render($doc));
+        }
+        $xml = $doc->saveXML($rootEl);
+
+        return $xml;
+//        return '    <borders count="1">
+//        <border>
+//            <left/>
+//            <right/>
+//            <top/>
+//            <bottom/>
+//            <diagonal/>
+//        </border>
+//    </borders>';
     }
 
     private function buildCellStyles()
@@ -222,6 +236,7 @@ final class StylesRender
             $fillId = $this->getFillIdForStyle($styleSheet, $format);
 			$fontId = $this->getFontIdForStyle($styleSheet, $format);
             $numberFormatId = $this->getNumberFormatIdForStyle($styleSheet, $format);
+            $borderId = $this->getBorderIdForStyle($styleSheet, $format);
             $align = $format->getAlign();
 
             $xfEl = $doc->createElement('xf');
@@ -234,7 +249,7 @@ final class StylesRender
 
             $xfEl->setAttribute('fontId', $fontId);
             $xfEl->setAttribute('fillId', $fillId);
-            $xfEl->setAttribute('borderId', 0);
+            $xfEl->setAttribute('borderId', $borderId);
             $xfEl->setAttribute('xfId', 0);
 
             if ($align) {
@@ -247,6 +262,18 @@ final class StylesRender
         $xml = $doc->saveXML($cellXfRootEl);
 
         return $xml;
+    }
+
+    private function getBorderIdForStyle(DOMStylesheet $styleSheet, CellFormatting $style)
+    {
+        $borderId = 0;
+        $border = $style->getBorder();
+        $borderStorage = $styleSheet->getBorders();
+        if ($border && $borderStorage->contains($border)) {
+            $borderId = $borderStorage->offsetGet($border);
+        }
+
+        return $borderId;
     }
 
     private function getFillIdForStyle(DOMStylesheet $styleSheet, CellFormatting $style)

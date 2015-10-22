@@ -11,7 +11,7 @@ namespace Seine\Parser;
 use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\NumberFormat;
-use Seine\Style;
+use YevgenGrytsay\Ooxml\DOM\CtBorder;
 use YevgenGrytsay\Ooxml\DOM\CtCellAlignment;
 
 class CellFormatting
@@ -20,6 +20,7 @@ class CellFormatting
 	const CONFIG_FILL = 'fill';
 	const CONFIG_NUMBER_FORMAT = 'numberFormat';
 	const CONFIG_ALIGNMENT = 'alignment';
+	const CONFIG_BORDER = 'border';
 
 	/**
      * @var Fill
@@ -38,6 +39,10 @@ class CellFormatting
 	 * @var CtCellAlignment
 	 */
 	private $align;
+	/**
+	 * @var CtBorder
+	 */
+	private $border;
 
 	/**
      * @return Fill
@@ -109,6 +114,22 @@ class CellFormatting
 	public function setAlign(CtCellAlignment $align)
 	{
 		$this->align = $align;
+	}
+
+	/**
+	 * @return CtBorder
+	 */
+	public function getBorder()
+	{
+		return $this->border;
+	}
+
+	/**
+	 * @param CtBorder $border
+	 */
+	public function setBorder(CtBorder $border)
+	{
+		$this->border = $border;
 	}
 
 }

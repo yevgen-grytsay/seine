@@ -16,6 +16,10 @@ abstract class DOMElement
     */
     protected $attributes = array();
     /**
+     * @var array
+     */
+    protected $childAttributes = array();
+    /**
      * @var OptionsResolver
      */
     protected $resolver;
@@ -68,6 +72,11 @@ abstract class DOMElement
         return $this->attributes[$name];
     }
 
+    public function childAttributes()
+    {
+        return array();
+    }
+
     /**
      * @param \DOMDocument $doc
      *
@@ -76,10 +85,9 @@ abstract class DOMElement
      */
     public function render(\DOMDocument $doc)
     {
-        $definedOptions = $this->resolver->getDefinedOptions();
         $el = $doc->createElement($this->name());
-        foreach ($definedOptions as $name) {
-            $el->setAttribute($name, $this->getAttribute($name));
+        foreach ($this->attributes as $name => $value) {
+            $el->setAttribute($name, $value);
         }
 
         return $el;

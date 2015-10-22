@@ -8,7 +8,11 @@ use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Parser\DOMStyle\PatternFill;
+use YevgenGrytsay\Ooxml\DOM\CtBorder;
+use YevgenGrytsay\Ooxml\DOM\CtBorderPr;
 use YevgenGrytsay\Ooxml\DOM\CtCellAlignment;
+use YevgenGrytsay\Ooxml\DOM\CtColor;
+use YevgenGrytsay\Ooxml\DOM\StBorderStyle;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -55,11 +59,11 @@ $defaultStyleConfig = array(
         Font::CONFIG_COLOR => '000000',
         Font::CONFIG_BOLD => true
     ),
-    'fill' => array(
-        'patternType' => PatternFill::PATTERN_SOLID,
-        'bgColor'     => '464646',
-        'fgColor'     => 'ededed'
-    ),
+//    'fill' => array(
+//        'patternType' => PatternFill::PATTERN_SOLID,
+//        'bgColor'     => '464646',
+//        'fgColor'     => 'ededed'
+//    ),
     'numberFormat' => array(
         NumberFormat::CONFIG_FORMAT_CODE => '[$₩-412]#,##0.00'
 //        'formatCode' => '##0.00'
@@ -67,17 +71,46 @@ $defaultStyleConfig = array(
 );
 
 $emphasizeStyleConfig = array(
-    'font' => array(
+    CellFormatting::CONFIG_FONT => array(
         Font::CONFIG_SIZE  => 24,
         Font::CONFIG_COLOR => 'ff0000'
     ),
-    'fill' => array(
-        Fill::CONFIG_PATTERN_TYPE => PatternFill::PATTERN_SOLID,
-        Fill::CONFIG_BACK_COLOR     => '000000',
-        Fill::CONFIG_FORE_COLOR     => '000000'
-    ),
+//    CellFormatting::CONFIG_FILL => array(
+//        Fill::CONFIG_PATTERN_TYPE => PatternFill::PATTERN_SOLID,
+//        Fill::CONFIG_BACK_COLOR     => '000000',
+//        Fill::CONFIG_FORE_COLOR     => '000000'
+//    ),
     CellFormatting::CONFIG_ALIGNMENT => array(
         CtCellAlignment::ATTR_HORIZONTAL => CtCellAlignment::HOR_CENTER
+    ),
+    CellFormatting::CONFIG_BORDER => array(
+        CtBorder::ATTR_OUTLINE        => true,
+        CtBorder::ATTR_BORDER_PR_LIST => array(
+            CtBorder::BORDER_BOTTOM => array(
+                CtBorderPr::COLOR => array(
+                    CtColor::ATTR_RGB => '00ff00'
+                ),
+                CtBorderPr::ATTR_STYLE => StBorderStyle::DOUBLE
+            ),
+            CtBorder::BORDER_LEFT => array(
+                CtBorderPr::COLOR => array(
+                    CtColor::ATTR_RGB => 'FFFF99FF'
+                ),
+                CtBorderPr::ATTR_STYLE => StBorderStyle::DOUBLE
+            ),
+            CtBorder::BORDER_RIGHT => array(
+                CtBorderPr::COLOR => array(
+                    CtColor::ATTR_RGB => 'FFFF99FF'
+                ),
+                CtBorderPr::ATTR_STYLE => StBorderStyle::DOUBLE
+            ),
+            CtBorder::BORDER_TOP => array(
+                CtBorderPr::COLOR => array(
+                    CtColor::ATTR_RGB => 'FFFF99FF'
+                ),
+                CtBorderPr::ATTR_STYLE => StBorderStyle::DOUBLE
+            )
+        )
     )
 );
 

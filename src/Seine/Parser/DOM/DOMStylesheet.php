@@ -13,6 +13,7 @@ use Seine\Parser\DOMStyle\Fill;
 use Seine\Parser\DOMStyle\Font;
 use Seine\Parser\DOMStyle\NumberFormat;
 use Seine\Parser\DOMStyle\PatternFill;
+use YevgenGrytsay\Ooxml\DOM\CtBorder;
 use YevgenGrytsay\Ooxml\DOM\CtCellAlignment;
 use YevgenGrytsay\Ooxml\StyleLookup;
 
@@ -41,6 +42,10 @@ class DOMStylesheet
 	 * @var \SplObjectStorage
 	 */
 	private $numberFormats;
+	/**
+	 * @var \SplObjectStorage
+	 */
+	private $borders;
 
 	/**
 	 *
@@ -62,6 +67,9 @@ class DOMStylesheet
 
 		$this->styles = new \ArrayObject();
 		$this->styles[] = new CellFormatting();
+
+		$this->borders = new \SplObjectStorage();
+		$this->borders->attach(new CtBorder(array()), $this->borders->count());
 
 		$this->defineStyle(array());
 	}
@@ -95,11 +103,24 @@ class DOMStylesheet
 					$align = $this->createAlignment($value);
 					$style->setAlign($align);
 					break;
+
+				case CellFormatting::CONFIG_BORDER:
+					$border = $this->createBorder($value);
+					$style->setBorder($border);
+					break;
 			}
 		}
 		$this->styles[] = $style;
 
 		return count($this->styles) - 1;
+	}
+
+	private function createBorder(array $config = array())
+	{
+		$border = new CtBorder($config);
+		$this->borders->attach($border, $this->borders->count());
+
+		return $border;
 	}
 
 	private function createAlignment(array $config = array())
@@ -168,5 +189,13 @@ class DOMStylesheet
 	public function getLookup()
 	{
 		return new StyleLookup($this->styles);
+	}
+
+	/**
+	 * @return \SplObjectStorage
+	 */
+	public function getBorders()
+	{
+		return $this->borders;
 	}
 }
