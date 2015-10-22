@@ -85,8 +85,6 @@ final class SheetHelper
         fwrite($this->stream, MyWriter::EOL.'    <sheetData>' . MyWriter::EOL);
     }
 
-
-
     public function writeRow($row, array $config = array())
     {
         $writer = new \XMLWriter();

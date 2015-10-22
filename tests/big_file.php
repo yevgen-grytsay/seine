@@ -82,7 +82,7 @@ $emphasizeStyleConfig = array(
 //    ),
     CellFormatting::CONFIG_ALIGNMENT => array(
         CtCellAlignment::ATTR_HORIZONTAL => CtCellAlignment::HOR_CENTER,
-        CtCellAlignment::ATTR_VERTICAL => CtCellAlignment::VERT_TOP,
+        CtCellAlignment::ATTR_VERTICAL => CtCellAlignment::VERT_CENTER,
         CtCellAlignment::ATTR_WRAP_TEXT => 'true'
     ),
     CellFormatting::CONFIG_BORDER => array(
@@ -95,9 +95,6 @@ $emphasizeStyleConfig = array(
                 CtBorderPr::ATTR_STYLE => StBorderStyle::DOUBLE
             ),
             CtBorder::BORDER_LEFT => array(
-                CtBorderPr::COLOR => array(
-                    CtColor::ATTR_RGB => 'FFFF99FF'
-                ),
                 CtBorderPr::ATTR_STYLE => StBorderStyle::DOUBLE
             ),
             CtBorder::BORDER_RIGHT => array(
@@ -140,7 +137,7 @@ $sheet->setColsConfig(array(
 ));
 
 $rowConfig = array(
-    \Seine\Parser\DOM\DOMArrayRow::ATTR_HEIGHT => 60
+    \YevgenGrytsay\Ooxml\DOM\CtRow::ATTR_HEIGHT => 60
 );
 foreach (generator(200, 25, $defaultStyle, $emphasizeStyle) as $cells) {
 //    $style = $defaultStyle;

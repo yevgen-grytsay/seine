@@ -24,13 +24,14 @@ namespace Seine\Parser\DOM;
 
 use Seine\Sheet;
 use Seine\Writer;
+use Seine\Writer\OfficeOpenXML2007\WriterBase;
 use YevgenGrytsay\Ooxml\DOM\CtCol;
 use YevgenGrytsay\Ooxml\StyleLookup;
 
 final class DOMSheet extends DOMElement implements Sheet
 {
     /**
-     * @var Writer
+     * @var WriterBase
      */
     private $writer;
 
@@ -51,21 +52,24 @@ final class DOMSheet extends DOMElement implements Sheet
     /**
      * DOMSheet constructor.
      *
-     * @param DOMFactory                       $factory
-     * @param \Seine\Writer                    $writer
-     * @param \YevgenGrytsay\Ooxml\StyleLookup $styleLookup
+     * @param DOMFactory                                               $factory
+     * @param \Seine\Writer\OfficeOpenXML2007\WriterBase $writer
+     * @param \YevgenGrytsay\Ooxml\StyleLookup                         $styleLookup
      */
-    public function __construct(DOMFactory $factory, Writer $writer, StyleLookup $styleLookup)
+    public function __construct(DOMFactory $factory, WriterBase $writer, StyleLookup $styleLookup)
     {
         parent::__construct($factory);
         $this->writer = $writer;
         $this->styleLookup = $styleLookup;
     }
 
+    /**
+     * @param array $config
+     */
     public function setColsConfig(array $config = array())
     {
         foreach ($config as $col) {
-            $this->cols[] = new CtCol($col);
+            $this->cols[] = CtCol::createFromConfig($col);
         }
     }
 

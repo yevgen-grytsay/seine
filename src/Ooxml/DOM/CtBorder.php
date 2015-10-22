@@ -6,6 +6,8 @@
 
 namespace YevgenGrytsay\Ooxml\DOM;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
  * <xsd:complexType name="CT_Border">
 <xsd:sequence>
@@ -34,7 +36,6 @@ class CtBorder extends DOMElement
 
     const BORDER_LEFT = 'left';
     const BORDER_RIGHT = 'right';
-
     const BORDER_START = 'start';
     const BORDER_END = 'end';
     const BORDER_TOP = 'top';
@@ -43,50 +44,58 @@ class CtBorder extends DOMElement
     const BORDER_VERTICAL = 'vertical';
     const BORDER_HORIZONTAL = 'horizontal';
 
-    private $borderNames = array(self::BORDER_START, self::BORDER_END, self::BORDER_TOP, self::BORDER_BOTTOM,
-        self::BORDER_DIAGONAL, self::BORDER_VERTICAL, self::BORDER_HORIZONTAL, self::BORDER_LEFT, self::BORDER_RIGHT);
-
     /**
-     * @var CtBorderPr[]
+     * @param array $config
+     *
+     * @return \YevgenGrytsay\Ooxml\DOM\CtBorder
+     * @throws \RuntimeException
      */
-    private $borders = array();
-
-    public function __construct(array $config)
+    public static function createFromConfig(array $config = array())
     {
-        parent::__construct($config);
-        foreach ($this->getAttribute(self::ATTR_BORDER_PR_LIST) as $name => $borderPr) {
-            $border = new CtBorderPr($name, $borderPr);
-            $this->borders[] = $border;
+        try {
+            $resolver = new OptionsResolver();
+            $resolver->setDefaults(array(
+                    self::ATTR_OUTLINE => true,
+                    self::ATTR_BORDER_PR_LIST => array())
+            );
+            $resolver->setDefined(array_merge(
+                array(self::ATTR_DIAGONAL_UP, self::ATTR_DIAGONAL_DOWN, self::ATTR_OUTLINE, self::ATTR_BORDER_PR_LIST)
+            ));
+            $attributes = $resolver->resolve($config);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Can not create element from config', 0, $e);
         }
-        unset($this->attributes[self::ATTR_BORDER_PR_LIST]);
-    }
 
-    public function render(\DOMDocument $doc)
-    {
-        $el = parent::render($doc);
-        foreach ($this->borders as $border) {
-            $el->appendChild($border->render($doc));
+        /**
+         * BorderPr
+         */
+        $borders = array();
+        foreach ($attributes[self::ATTR_BORDER_PR_LIST] as $name => $borderPr) {
+            $color = null;
+            if (array_key_exists(CtBorderPr::COLOR, $borderPr)) {
+                $color = CtColor::createFromConfig($borderPr[CtBorderPr::COLOR]);
+                unset($borderPr[CtBorderPr::COLOR]);
+            }
+            $border = CtBorderPr::createFromConfig($name, $borderPr);
+            if ($color) {
+                $border->setColor($color);
+            }
+            $borders[] = $border;
         }
+        unset($attributes[self::ATTR_BORDER_PR_LIST]);
+        $el = new CtBorder($attributes, $borders);
 
         return $el;
     }
 
-
-    protected function defaults()
+    /**
+     * CtBorder constructor.
+     *
+     * @param array $attributes
+     * @param array $childNodes
+     */
+    protected function __construct(array $attributes, array $childNodes = array())
     {
-        return array(self::ATTR_OUTLINE => true, self::ATTR_BORDER_PR_LIST => array());
-    }
-
-    protected function optional()
-    {
-        return array_merge(
-            array(self::ATTR_DIAGONAL_UP, self::ATTR_DIAGONAL_DOWN, self::ATTR_OUTLINE, self::ATTR_BORDER_PR_LIST),
-            $this->borderNames
-        );
-    }
-
-    protected function name()
-    {
-        return 'border';
+        parent::__construct('border', $attributes, $childNodes);
     }
 }

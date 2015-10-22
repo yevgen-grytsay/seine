@@ -52,7 +52,8 @@ class Font
         $resolver->setDefaults(array(
             self::CONFIG_COLOR => null,
             self::CONFIG_SIZE => 24,
-            self::CONFIG_BOLD => false
+            self::CONFIG_BOLD => false,
+            self::CONFIG_NAME => 'Arial'
         ));
         $config = $resolver->resolve($config);
 

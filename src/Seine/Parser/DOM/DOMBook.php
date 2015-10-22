@@ -64,7 +64,7 @@ final class DOMBook extends DOMElement implements Book
         return $this->styleSheetList[0];
     }
 
-    public function setWriter(Writer $writer)
+    public function setWriter(Writer\OfficeOpenXML2007\WriterBase $writer)
     {
         $this->writer = $writer;
     }

@@ -69,7 +69,7 @@ class DOMStylesheet
 		$this->styles[] = new CellFormatting();
 
 		$this->borders = new \SplObjectStorage();
-		$this->borders->attach(new CtBorder(array()), $this->borders->count());
+		$this->borders->attach(CtBorder::createFromConfig(), $this->borders->count());
 
 		$this->defineStyle(array());
 	}
@@ -117,7 +117,7 @@ class DOMStylesheet
 
 	private function createBorder(array $config = array())
 	{
-		$border = new CtBorder($config);
+		$border = CtBorder::createFromConfig($config);
 		$this->borders->attach($border, $this->borders->count());
 
 		return $border;
@@ -125,7 +125,7 @@ class DOMStylesheet
 
 	private function createAlignment(array $config = array())
 	{
-		$align = new CtCellAlignment($config);
+		$align = CtCellAlignment::createFromConfig($config);
 
 		return $align;
 	}

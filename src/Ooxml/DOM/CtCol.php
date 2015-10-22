@@ -5,6 +5,7 @@ namespace YevgenGrytsay\Ooxml\DOM;
  * @author: Yevgen Grytsay hrytsai@mti.ua
  * @date  : 21.10.15
  */
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * 18.3.1.13
@@ -48,28 +49,39 @@ class CtCol extends DOMElement
     const ATTR_CUSTOM_WIDTH = 'customWidth';
 
     /**
-     * @return array
+     * CtCol constructor.
+     *
+     * @param array $attributes
+     * @param array $childNodes
      */
-    protected function required()
+    protected function __construct(array $attributes, array $childNodes = array())
     {
-        return array(self::ATTR_MIN, self::ATTR_MAX);
+        parent::__construct('col', $attributes, $childNodes);
     }
 
     /**
-     * @return array
+     * @param array $config
+     *
+     * @return static
+     * @throws \RuntimeException
      */
-    protected function defaults()
+    public static function createFromConfig(array $config = array())
     {
-        return array(
-            self::ATTR_BEST_FIT => false,
-            self::ATTR_WIDTH => null,
-            self::ATTR_CUSTOM_WIDTH => false
-        );
-    }
+        try {
+            $resolver = new OptionsResolver();
+            $resolver->setRequired(array(self::ATTR_MIN, self::ATTR_MAX));
+            $resolver->setDefaults(array(
+                self::ATTR_BEST_FIT => false,
+                self::ATTR_WIDTH => null,
+                self::ATTR_CUSTOM_WIDTH => false
+            ));
+            $attributes = $resolver->resolve($config);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Can not create element from config', 0, $e);
+        }
+        $el = new static($attributes);
 
-    protected function name()
-    {
-        return 'col';
+        return $el;
     }
 }
 /**

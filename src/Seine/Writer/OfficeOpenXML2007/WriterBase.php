@@ -26,10 +26,8 @@ use Seine\Writer;
 use Seine\IOException;
 use Seine\Compressor;
 
-abstract class WriterBase implements Writer
+abstract class WriterBase
 {
-    
-    
     const APP_NAME = 'Seine';
     const EOL = "\r\n";
     

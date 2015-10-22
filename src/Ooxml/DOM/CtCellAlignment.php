@@ -6,6 +6,8 @@
 
 namespace YevgenGrytsay\Ooxml\DOM;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
  * <xsd:complexType name="CT_CellAlignment">
 <xsd:attribute name="horizontal" type="ST_HorizontalAlignment" use="optional"/>
@@ -63,28 +65,46 @@ class CtCellAlignment extends DOMElement
     const VERT_JUSTIFY = 'justify';
     const VERT_DISTRIBUTED = 'distributed';
 
-     protected function createResolver()
+    /**
+     * @param array $config
+     *
+     * @return \YevgenGrytsay\Ooxml\DOM\CtCellAlignment
+     * @throws \RuntimeException
+     */
+    public static function createFromConfig(array $config = array())
     {
-        parent::createResolver();
-        $this->resolver->setAllowedValues(self::ATTR_HORIZONTAL, array(
-            self::HOR_GENERAL, self::HOR_LEFT, self::HOR_CENTER,
-            self::HOR_RIGHT, self::HOR_FILL, self::HOR_JUSTIFY
-        ));
-        $this->resolver->setAllowedValues(self::ATTR_VERTICAL, array(
-            self::VERT_TOP, self::VERT_CENTER, self::VERT_BOTTOM,
-            self::VERT_JUSTIFY, self::VERT_DISTRIBUTED
-        ));
-        $this->resolver->setAllowedValues(self::ATTR_WRAP_TEXT, array('true', 'false'));
+        try {
+            $resolver = new OptionsResolver();
+            $resolver->setDefined(array_merge(
+                array(self::ATTR_HORIZONTAL, self::ATTR_VERTICAL, self::ATTR_WRAP_TEXT)
+            ));
+            $resolver->setAllowedValues(self::ATTR_HORIZONTAL, array(
+                self::HOR_GENERAL, self::HOR_LEFT, self::HOR_CENTER,
+                self::HOR_RIGHT, self::HOR_FILL, self::HOR_JUSTIFY
+            ));
+            $resolver->setAllowedValues(self::ATTR_VERTICAL, array(
+                self::VERT_TOP, self::VERT_CENTER, self::VERT_BOTTOM,
+                self::VERT_JUSTIFY, self::VERT_DISTRIBUTED
+            ));
+            $resolver->setAllowedValues(self::ATTR_WRAP_TEXT, array('true', 'false'));
+            $attributes = $resolver->resolve($config);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Can not create element from config', 0, $e);
+        }
+        $el = new CtCellAlignment($attributes);
+
+        return $el;
     }
 
-    protected function optional()
+    /**
+     * CtCellAlignment constructor.
+     *
+     * @param array $attributes
+     * @param array $childNodes
+     */
+    public function __construct(array $attributes, array $childNodes = array())
     {
-        return array(self::ATTR_HORIZONTAL, self::ATTR_VERTICAL, self::ATTR_WRAP_TEXT);
+        parent::__construct('alignment', $attributes, $childNodes);
     }
 
-
-    protected function name()
-    {
-        return 'alignment';
-    }
 }
